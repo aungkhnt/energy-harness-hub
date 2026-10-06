@@ -1,0 +1,2015 @@
+{
+  "schema_version": "0.1.0",
+  "study_id": "hydropower-sensitivity",
+  "status": "completed",
+  "input_sha256": "0e5c8009231c9d4abbd62e669b5a730478f2168e52b54c6a662c42f2ebb59046",
+  "input_snapshot": {
+    "schema_version": "0.1.0",
+    "study_id": "hydropower-sensitivity",
+    "base_study": {
+      "schema_version": "0.1.0",
+      "study_id": "hydropower-prescribed-resource-reference",
+      "technology": "hydropower",
+      "assumptions": [
+        "A hypothetical hydraulic operating point with prescribed net head and flow, not a site resource forecast.",
+        "The economic inputs are invented demonstration values, not supplier quotes or market estimates.",
+        "Annual operation is assumed at this fixed operating point for 4000 hours; no seasonal analysis is performed."
+      ],
+      "parameters": {
+        "head_m": 10,
+        "flow_m3_s": 0.2,
+        "water_density_kg_m3": 1000,
+        "turbine_efficiency": 0.85,
+        "generator_efficiency": 0.93,
+        "auxiliary_power_w": 200
+      },
+      "economics": {
+        "currency": "USD",
+        "price_year": 2026,
+        "region": "hypothetical, no geographic price calibration",
+        "assumption_status": "illustrative_not_market_data",
+        "lifetime_years": 20,
+        "real_discount_rate": 0.05,
+        "operating_hours_per_year": 4000,
+        "capital_items": [
+          {
+            "name": "illustrative turbine-generator package",
+            "quantity": 1,
+            "quantity_unit": "package",
+            "unit_cost": 30000
+          },
+          {
+            "name": "illustrative installation allowance",
+            "quantity": 1,
+            "quantity_unit": "allowance",
+            "unit_cost": 20000
+          }
+        ],
+        "annual_opex": 1500,
+        "decommissioning_cost": 5000
+      }
+    },
+    "axes": {
+      "head_m": [
+        5,
+        10,
+        20
+      ],
+      "flow_m3_s": [
+        0.1,
+        0.2,
+        0.4
+      ]
+    }
+  },
+  "case_count": 9,
+  "completed_count": 9,
+  "failed_count": 0,
+  "execution_order": "Cartesian product of lexically sorted parameter names; value list order preserved",
+  "cases": [
+    {
+      "case_id": "hydropower-sensitivity:0001",
+      "settings": {
+        "flow_m3_s": 0.1,
+        "head_m": 5
+      },
+      "status": "completed",
+      "result": {
+        "schema_version": "0.1.0",
+        "status": "completed_reference_model",
+        "study_id": "hydropower-sensitivity:0001",
+        "technology": "hydropower",
+        "model_id": "hydropower_reference_v1",
+        "engine_version": "0.2.0",
+        "input_sha256": "da804c9d2679a02b9cb448ddbd6491a36da5041aa7741937e7581ad3340ceef6",
+        "implementation_sha256": "6741a8e1fcadee6ed6cba9597bde4d544f3a19d901e9a01e23144fba2390f9de",
+        "input_snapshot": {
+          "schema_version": "0.1.0",
+          "study_id": "hydropower-sensitivity:0001",
+          "technology": "hydropower",
+          "assumptions": [
+            "A hypothetical hydraulic operating point with prescribed net head and flow, not a site resource forecast.",
+            "The economic inputs are invented demonstration values, not supplier quotes or market estimates.",
+            "Annual operation is assumed at this fixed operating point for 4000 hours; no seasonal analysis is performed."
+          ],
+          "parameters": {
+            "head_m": 5,
+            "flow_m3_s": 0.1,
+            "water_density_kg_m3": 1000,
+            "turbine_efficiency": 0.85,
+            "generator_efficiency": 0.93,
+            "auxiliary_power_w": 200
+          },
+          "economics": {
+            "currency": "USD",
+            "price_year": 2026,
+            "region": "hypothetical, no geographic price calibration",
+            "assumption_status": "illustrative_not_market_data",
+            "lifetime_years": 20,
+            "real_discount_rate": 0.05,
+            "operating_hours_per_year": 4000,
+            "capital_items": [
+              {
+                "name": "illustrative turbine-generator package",
+                "quantity": 1,
+                "quantity_unit": "package",
+                "unit_cost": 30000
+              },
+              {
+                "name": "illustrative installation allowance",
+                "quantity": 1,
+                "quantity_unit": "allowance",
+                "unit_cost": 20000
+              }
+            ],
+            "annual_opex": 1500,
+            "decommissioning_cost": 5000
+          }
+        },
+        "normalized_parameters": {
+          "head_m": 5,
+          "flow_m3_s": 0.1,
+          "water_density_kg_m3": 1000,
+          "turbine_efficiency": 0.85,
+          "generator_efficiency": 0.93,
+          "auxiliary_power_w": 200
+        },
+        "model_definition": {
+          "technology": "hydropower",
+          "model_id": "hydropower_reference_v1",
+          "execution_mode": "steady_operating_point",
+          "parameter_units": {
+            "head_m": "m",
+            "flow_m3_s": "m3/s",
+            "water_density_kg_m3": "kg/m3",
+            "turbine_efficiency": "1",
+            "generator_efficiency": "1",
+            "auxiliary_power_w": "W"
+          },
+          "required_parameters": [
+            "head_m",
+            "flow_m3_s",
+            "water_density_kg_m3",
+            "turbine_efficiency",
+            "generator_efficiency",
+            "auxiliary_power_w"
+          ],
+          "description": "Prescribed head/flow with constant efficiencies.",
+          "output_scope": "prescribed hydraulic inlet to net electrical bus",
+          "domain_reference": "docs/reference-models.md",
+          "empirical_validation": "deferred"
+        },
+        "metrics": {
+          "hydraulic_power": {
+            "value": 4903.325,
+            "unit": "W",
+            "scope": "prescribed hydraulic inlet to net electrical bus"
+          },
+          "shaft_power": {
+            "value": 4167.82625,
+            "unit": "W",
+            "scope": "prescribed hydraulic inlet to net electrical bus"
+          },
+          "gross_electric_power": {
+            "value": 3876.0784125000005,
+            "unit": "W",
+            "scope": "prescribed hydraulic inlet to net electrical bus"
+          },
+          "auxiliary_power": {
+            "value": 200,
+            "unit": "W",
+            "scope": "prescribed hydraulic inlet to net electrical bus"
+          },
+          "net_electric_power": {
+            "value": 3676.0784125000005,
+            "unit": "W",
+            "scope": "prescribed hydraulic inlet to net electrical bus"
+          },
+          "conversion_losses": {
+            "value": 1027.2465874999994,
+            "unit": "W",
+            "scope": "prescribed hydraulic inlet to net electrical bus"
+          }
+        },
+        "diagnostics": {
+          "energy_balance_residual_w": 9.094947017729282e-13
+        },
+        "series": {},
+        "warnings": [
+          "Head is net available head after upstream hydraulic losses.",
+          "Constant head, flow, density and efficiencies; no reservoir, resource-duration, cavitation or dispatch model.",
+          "Negative net power is preserved as an importing operating point."
+        ],
+        "validation_status": "computational_reference_checks_only_not_empirically_validated",
+        "evidence_manifest": "evidence/references.md",
+        "economics": {
+          "status": "illustrative_not_market_data",
+          "basis": {
+            "currency": "USD",
+            "price_year": 2026,
+            "region": "hypothetical, no geographic price calibration",
+            "assumption_status": "illustrative_not_market_data",
+            "lifetime_years": 20,
+            "real_discount_rate": 0.05,
+            "operating_hours_per_year": 4000,
+            "capital_items": [
+              {
+                "name": "illustrative turbine-generator package",
+                "quantity": 1,
+                "quantity_unit": "package",
+                "unit_cost": 30000
+              },
+              {
+                "name": "illustrative installation allowance",
+                "quantity": 1,
+                "quantity_unit": "allowance",
+                "unit_cost": 20000
+              }
+            ],
+            "annual_opex": 1500,
+            "decommissioning_cost": 5000
+          },
+          "capital_breakdown": [
+            {
+              "name": "illustrative turbine-generator package",
+              "quantity": 1,
+              "quantity_unit": "package",
+              "unit_cost": 30000,
+              "total_cost": 30000
+            },
+            {
+              "name": "illustrative installation allowance",
+              "quantity": 1,
+              "quantity_unit": "allowance",
+              "unit_cost": 20000,
+              "total_cost": 20000
+            }
+          ],
+          "metrics": {
+            "initial_capital_cost": {
+              "value": 50000,
+              "unit": "USD",
+              "scope": "listed capital items only"
+            },
+            "annual_delivered_energy": {
+              "value": 14704.313650000002,
+              "unit": "kWh/year",
+              "scope": "constant modeled net power times assumed operating hours"
+            },
+            "discounted_lifecycle_cost": {
+              "value": 70577.76292817497,
+              "unit": "USD",
+              "scope": "listed costs; initial capital at year zero; other costs at year end"
+            },
+            "lcoe": {
+              "value": 0.3851483605620738,
+              "unit": "USD/kWh",
+              "scope": "discounted listed costs / discounted net delivered electricity"
+            }
+          },
+          "warnings": [
+            "Illustrative user-entered prices; no market-price or supply-chain evidence.",
+            "Constant net output during assumed operating hours; availability is not predicted.",
+            "Constant real costs; no escalation, degradation, financing schedule, taxes, subsidies, or replacement schedule.",
+            "Omitted costs are not proven zero. Include fuel and heat-source costs in annual_opex when relevant.",
+            "Not suitable for a cross-technology ranking without matching scope and completeness."
+          ]
+        },
+        "unsupported_outputs": [
+          "deployment_feasibility",
+          "supply_chain",
+          "propulsion",
+          "transient_dynamics"
+        ]
+      }
+    },
+    {
+      "case_id": "hydropower-sensitivity:0002",
+      "settings": {
+        "flow_m3_s": 0.1,
+        "head_m": 10
+      },
+      "status": "completed",
+      "result": {
+        "schema_version": "0.1.0",
+        "status": "completed_reference_model",
+        "study_id": "hydropower-sensitivity:0002",
+        "technology": "hydropower",
+        "model_id": "hydropower_reference_v1",
+        "engine_version": "0.2.0",
+        "input_sha256": "88ec487ff95d7e9598d80e3665481218f8e97f951ded42d2bb03c57d543345ad",
+        "implementation_sha256": "6741a8e1fcadee6ed6cba9597bde4d544f3a19d901e9a01e23144fba2390f9de",
+        "input_snapshot": {
+          "schema_version": "0.1.0",
+          "study_id": "hydropower-sensitivity:0002",
+          "technology": "hydropower",
+          "assumptions": [
+            "A hypothetical hydraulic operating point with prescribed net head and flow, not a site resource forecast.",
+            "The economic inputs are invented demonstration values, not supplier quotes or market estimates.",
+            "Annual operation is assumed at this fixed operating point for 4000 hours; no seasonal analysis is performed."
+          ],
+          "parameters": {
+            "head_m": 10,
+            "flow_m3_s": 0.1,
+            "water_density_kg_m3": 1000,
+            "turbine_efficiency": 0.85,
+            "generator_efficiency": 0.93,
+            "auxiliary_power_w": 200
+          },
+          "economics": {
+            "currency": "USD",
+            "price_year": 2026,
+            "region": "hypothetical, no geographic price calibration",
+            "assumption_status": "illustrative_not_market_data",
+            "lifetime_years": 20,
+            "real_discount_rate": 0.05,
+            "operating_hours_per_year": 4000,
+            "capital_items": [
+              {
+                "name": "illustrative turbine-generator package",
+                "quantity": 1,
+                "quantity_unit": "package",
+                "unit_cost": 30000
+              },
+              {
+                "name": "illustrative installation allowance",
+                "quantity": 1,
+                "quantity_unit": "allowance",
+                "unit_cost": 20000
+              }
+            ],
+            "annual_opex": 1500,
+            "decommissioning_cost": 5000
+          }
+        },
+        "normalized_parameters": {
+          "head_m": 10,
+          "flow_m3_s": 0.1,
+          "water_density_kg_m3": 1000,
+          "turbine_efficiency": 0.85,
+          "generator_efficiency": 0.93,
+          "auxiliary_power_w": 200
+        },
+        "model_definition": {
+          "technology": "hydropower",
+          "model_id": "hydropower_reference_v1",
+          "execution_mode": "steady_operating_point",
+          "parameter_units": {
+            "head_m": "m",
+            "flow_m3_s": "m3/s",
+            "water_density_kg_m3": "kg/m3",
+            "turbine_efficiency": "1",
+            "generator_efficiency": "1",
+            "auxiliary_power_w": "W"
+          },
+          "required_parameters": [
+            "head_m",
+            "flow_m3_s",
+            "water_density_kg_m3",
+            "turbine_efficiency",
+            "generator_efficiency",
+            "auxiliary_power_w"
+          ],
+          "description": "Prescribed head/flow with constant efficiencies.",
+          "output_scope": "prescribed hydraulic inlet to net electrical bus",
+          "domain_reference": "docs/reference-models.md",
+          "empirical_validation": "deferred"
+        },
+        "metrics": {
+          "hydraulic_power": {
+            "value": 9806.65,
+            "unit": "W",
+            "scope": "prescribed hydraulic inlet to net electrical bus"
+          },
+          "shaft_power": {
+            "value": 8335.6525,
+            "unit": "W",
+            "scope": "prescribed hydraulic inlet to net electrical bus"
+          },
+          "gross_electric_power": {
+            "value": 7752.156825000001,
+            "unit": "W",
+            "scope": "prescribed hydraulic inlet to net electrical bus"
+          },
+          "auxiliary_power": {
+            "value": 200,
+            "unit": "W",
+            "scope": "prescribed hydraulic inlet to net electrical bus"
+          },
+          "net_electric_power": {
+            "value": 7552.156825000001,
+            "unit": "W",
+            "scope": "prescribed hydraulic inlet to net electrical bus"
+          },
+          "conversion_losses": {
+            "value": 2054.4931749999987,
+            "unit": "W",
+            "scope": "prescribed hydraulic inlet to net electrical bus"
+          }
+        },
+        "diagnostics": {
+          "energy_balance_residual_w": 1.8189894035458565e-12
+        },
+        "series": {},
+        "warnings": [
+          "Head is net available head after upstream hydraulic losses.",
+          "Constant head, flow, density and efficiencies; no reservoir, resource-duration, cavitation or dispatch model.",
+          "Negative net power is preserved as an importing operating point."
+        ],
+        "validation_status": "computational_reference_checks_only_not_empirically_validated",
+        "evidence_manifest": "evidence/references.md",
+        "economics": {
+          "status": "illustrative_not_market_data",
+          "basis": {
+            "currency": "USD",
+            "price_year": 2026,
+            "region": "hypothetical, no geographic price calibration",
+            "assumption_status": "illustrative_not_market_data",
+            "lifetime_years": 20,
+            "real_discount_rate": 0.05,
+            "operating_hours_per_year": 4000,
+            "capital_items": [
+              {
+                "name": "illustrative turbine-generator package",
+                "quantity": 1,
+                "quantity_unit": "package",
+                "unit_cost": 30000
+              },
+              {
+                "name": "illustrative installation allowance",
+                "quantity": 1,
+                "quantity_unit": "allowance",
+                "unit_cost": 20000
+              }
+            ],
+            "annual_opex": 1500,
+            "decommissioning_cost": 5000
+          },
+          "capital_breakdown": [
+            {
+              "name": "illustrative turbine-generator package",
+              "quantity": 1,
+              "quantity_unit": "package",
+              "unit_cost": 30000,
+              "total_cost": 30000
+            },
+            {
+              "name": "illustrative installation allowance",
+              "quantity": 1,
+              "quantity_unit": "allowance",
+              "unit_cost": 20000,
+              "total_cost": 20000
+            }
+          ],
+          "metrics": {
+            "initial_capital_cost": {
+              "value": 50000,
+              "unit": "USD",
+              "scope": "listed capital items only"
+            },
+            "annual_delivered_energy": {
+              "value": 30208.627300000004,
+              "unit": "kWh/year",
+              "scope": "constant modeled net power times assumed operating hours"
+            },
+            "discounted_lifecycle_cost": {
+              "value": 70577.76292817497,
+              "unit": "USD",
+              "scope": "listed costs; initial capital at year zero; other costs at year end"
+            },
+            "lcoe": {
+              "value": 0.18747433437626024,
+              "unit": "USD/kWh",
+              "scope": "discounted listed costs / discounted net delivered electricity"
+            }
+          },
+          "warnings": [
+            "Illustrative user-entered prices; no market-price or supply-chain evidence.",
+            "Constant net output during assumed operating hours; availability is not predicted.",
+            "Constant real costs; no escalation, degradation, financing schedule, taxes, subsidies, or replacement schedule.",
+            "Omitted costs are not proven zero. Include fuel and heat-source costs in annual_opex when relevant.",
+            "Not suitable for a cross-technology ranking without matching scope and completeness."
+          ]
+        },
+        "unsupported_outputs": [
+          "deployment_feasibility",
+          "supply_chain",
+          "propulsion",
+          "transient_dynamics"
+        ]
+      }
+    },
+    {
+      "case_id": "hydropower-sensitivity:0003",
+      "settings": {
+        "flow_m3_s": 0.1,
+        "head_m": 20
+      },
+      "status": "completed",
+      "result": {
+        "schema_version": "0.1.0",
+        "status": "completed_reference_model",
+        "study_id": "hydropower-sensitivity:0003",
+        "technology": "hydropower",
+        "model_id": "hydropower_reference_v1",
+        "engine_version": "0.2.0",
+        "input_sha256": "728a2f1acabf5099fc9c9e4ad3992f320f27bae41f6907cae7bb600b63620f2d",
+        "implementation_sha256": "6741a8e1fcadee6ed6cba9597bde4d544f3a19d901e9a01e23144fba2390f9de",
+        "input_snapshot": {
+          "schema_version": "0.1.0",
+          "study_id": "hydropower-sensitivity:0003",
+          "technology": "hydropower",
+          "assumptions": [
+            "A hypothetical hydraulic operating point with prescribed net head and flow, not a site resource forecast.",
+            "The economic inputs are invented demonstration values, not supplier quotes or market estimates.",
+            "Annual operation is assumed at this fixed operating point for 4000 hours; no seasonal analysis is performed."
+          ],
+          "parameters": {
+            "head_m": 20,
+            "flow_m3_s": 0.1,
+            "water_density_kg_m3": 1000,
+            "turbine_efficiency": 0.85,
+            "generator_efficiency": 0.93,
+            "auxiliary_power_w": 200
+          },
+          "economics": {
+            "currency": "USD",
+            "price_year": 2026,
+            "region": "hypothetical, no geographic price calibration",
+            "assumption_status": "illustrative_not_market_data",
+            "lifetime_years": 20,
+            "real_discount_rate": 0.05,
+            "operating_hours_per_year": 4000,
+            "capital_items": [
+              {
+                "name": "illustrative turbine-generator package",
+                "quantity": 1,
+                "quantity_unit": "package",
+                "unit_cost": 30000
+              },
+              {
+                "name": "illustrative installation allowance",
+                "quantity": 1,
+                "quantity_unit": "allowance",
+                "unit_cost": 20000
+              }
+            ],
+            "annual_opex": 1500,
+            "decommissioning_cost": 5000
+          }
+        },
+        "normalized_parameters": {
+          "head_m": 20,
+          "flow_m3_s": 0.1,
+          "water_density_kg_m3": 1000,
+          "turbine_efficiency": 0.85,
+          "generator_efficiency": 0.93,
+          "auxiliary_power_w": 200
+        },
+        "model_definition": {
+          "technology": "hydropower",
+          "model_id": "hydropower_reference_v1",
+          "execution_mode": "steady_operating_point",
+          "parameter_units": {
+            "head_m": "m",
+            "flow_m3_s": "m3/s",
+            "water_density_kg_m3": "kg/m3",
+            "turbine_efficiency": "1",
+            "generator_efficiency": "1",
+            "auxiliary_power_w": "W"
+          },
+          "required_parameters": [
+            "head_m",
+            "flow_m3_s",
+            "water_density_kg_m3",
+            "turbine_efficiency",
+            "generator_efficiency",
+            "auxiliary_power_w"
+          ],
+          "description": "Prescribed head/flow with constant efficiencies.",
+          "output_scope": "prescribed hydraulic inlet to net electrical bus",
+          "domain_reference": "docs/reference-models.md",
+          "empirical_validation": "deferred"
+        },
+        "metrics": {
+          "hydraulic_power": {
+            "value": 19613.3,
+            "unit": "W",
+            "scope": "prescribed hydraulic inlet to net electrical bus"
+          },
+          "shaft_power": {
+            "value": 16671.305,
+            "unit": "W",
+            "scope": "prescribed hydraulic inlet to net electrical bus"
+          },
+          "gross_electric_power": {
+            "value": 15504.313650000002,
+            "unit": "W",
+            "scope": "prescribed hydraulic inlet to net electrical bus"
+          },
+          "auxiliary_power": {
+            "value": 200,
+            "unit": "W",
+            "scope": "prescribed hydraulic inlet to net electrical bus"
+          },
+          "net_electric_power": {
+            "value": 15304.313650000002,
+            "unit": "W",
+            "scope": "prescribed hydraulic inlet to net electrical bus"
+          },
+          "conversion_losses": {
+            "value": 4108.986349999997,
+            "unit": "W",
+            "scope": "prescribed hydraulic inlet to net electrical bus"
+          }
+        },
+        "diagnostics": {
+          "energy_balance_residual_w": 3.637978807091713e-12
+        },
+        "series": {},
+        "warnings": [
+          "Head is net available head after upstream hydraulic losses.",
+          "Constant head, flow, density and efficiencies; no reservoir, resource-duration, cavitation or dispatch model.",
+          "Negative net power is preserved as an importing operating point."
+        ],
+        "validation_status": "computational_reference_checks_only_not_empirically_validated",
+        "evidence_manifest": "evidence/references.md",
+        "economics": {
+          "status": "illustrative_not_market_data",
+          "basis": {
+            "currency": "USD",
+            "price_year": 2026,
+            "region": "hypothetical, no geographic price calibration",
+            "assumption_status": "illustrative_not_market_data",
+            "lifetime_years": 20,
+            "real_discount_rate": 0.05,
+            "operating_hours_per_year": 4000,
+            "capital_items": [
+              {
+                "name": "illustrative turbine-generator package",
+                "quantity": 1,
+                "quantity_unit": "package",
+                "unit_cost": 30000
+              },
+              {
+                "name": "illustrative installation allowance",
+                "quantity": 1,
+                "quantity_unit": "allowance",
+                "unit_cost": 20000
+              }
+            ],
+            "annual_opex": 1500,
+            "decommissioning_cost": 5000
+          },
+          "capital_breakdown": [
+            {
+              "name": "illustrative turbine-generator package",
+              "quantity": 1,
+              "quantity_unit": "package",
+              "unit_cost": 30000,
+              "total_cost": 30000
+            },
+            {
+              "name": "illustrative installation allowance",
+              "quantity": 1,
+              "quantity_unit": "allowance",
+              "unit_cost": 20000,
+              "total_cost": 20000
+            }
+          ],
+          "metrics": {
+            "initial_capital_cost": {
+              "value": 50000,
+              "unit": "USD",
+              "scope": "listed capital items only"
+            },
+            "annual_delivered_energy": {
+              "value": 61217.25460000001,
+              "unit": "kWh/year",
+              "scope": "constant modeled net power times assumed operating hours"
+            },
+            "discounted_lifecycle_cost": {
+              "value": 70577.76292817497,
+              "unit": "USD",
+              "scope": "listed costs; initial capital at year zero; other costs at year end"
+            },
+            "lcoe": {
+              "value": 0.0925121901087022,
+              "unit": "USD/kWh",
+              "scope": "discounted listed costs / discounted net delivered electricity"
+            }
+          },
+          "warnings": [
+            "Illustrative user-entered prices; no market-price or supply-chain evidence.",
+            "Constant net output during assumed operating hours; availability is not predicted.",
+            "Constant real costs; no escalation, degradation, financing schedule, taxes, subsidies, or replacement schedule.",
+            "Omitted costs are not proven zero. Include fuel and heat-source costs in annual_opex when relevant.",
+            "Not suitable for a cross-technology ranking without matching scope and completeness."
+          ]
+        },
+        "unsupported_outputs": [
+          "deployment_feasibility",
+          "supply_chain",
+          "propulsion",
+          "transient_dynamics"
+        ]
+      }
+    },
+    {
+      "case_id": "hydropower-sensitivity:0004",
+      "settings": {
+        "flow_m3_s": 0.2,
+        "head_m": 5
+      },
+      "status": "completed",
+      "result": {
+        "schema_version": "0.1.0",
+        "status": "completed_reference_model",
+        "study_id": "hydropower-sensitivity:0004",
+        "technology": "hydropower",
+        "model_id": "hydropower_reference_v1",
+        "engine_version": "0.2.0",
+        "input_sha256": "c44b32d92eaed28d4fa6752e231ec4da3bd9378849c02206f822f1a6fd7a9811",
+        "implementation_sha256": "6741a8e1fcadee6ed6cba9597bde4d544f3a19d901e9a01e23144fba2390f9de",
+        "input_snapshot": {
+          "schema_version": "0.1.0",
+          "study_id": "hydropower-sensitivity:0004",
+          "technology": "hydropower",
+          "assumptions": [
+            "A hypothetical hydraulic operating point with prescribed net head and flow, not a site resource forecast.",
+            "The economic inputs are invented demonstration values, not supplier quotes or market estimates.",
+            "Annual operation is assumed at this fixed operating point for 4000 hours; no seasonal analysis is performed."
+          ],
+          "parameters": {
+            "head_m": 5,
+            "flow_m3_s": 0.2,
+            "water_density_kg_m3": 1000,
+            "turbine_efficiency": 0.85,
+            "generator_efficiency": 0.93,
+            "auxiliary_power_w": 200
+          },
+          "economics": {
+            "currency": "USD",
+            "price_year": 2026,
+            "region": "hypothetical, no geographic price calibration",
+            "assumption_status": "illustrative_not_market_data",
+            "lifetime_years": 20,
+            "real_discount_rate": 0.05,
+            "operating_hours_per_year": 4000,
+            "capital_items": [
+              {
+                "name": "illustrative turbine-generator package",
+                "quantity": 1,
+                "quantity_unit": "package",
+                "unit_cost": 30000
+              },
+              {
+                "name": "illustrative installation allowance",
+                "quantity": 1,
+                "quantity_unit": "allowance",
+                "unit_cost": 20000
+              }
+            ],
+            "annual_opex": 1500,
+            "decommissioning_cost": 5000
+          }
+        },
+        "normalized_parameters": {
+          "head_m": 5,
+          "flow_m3_s": 0.2,
+          "water_density_kg_m3": 1000,
+          "turbine_efficiency": 0.85,
+          "generator_efficiency": 0.93,
+          "auxiliary_power_w": 200
+        },
+        "model_definition": {
+          "technology": "hydropower",
+          "model_id": "hydropower_reference_v1",
+          "execution_mode": "steady_operating_point",
+          "parameter_units": {
+            "head_m": "m",
+            "flow_m3_s": "m3/s",
+            "water_density_kg_m3": "kg/m3",
+            "turbine_efficiency": "1",
+            "generator_efficiency": "1",
+            "auxiliary_power_w": "W"
+          },
+          "required_parameters": [
+            "head_m",
+            "flow_m3_s",
+            "water_density_kg_m3",
+            "turbine_efficiency",
+            "generator_efficiency",
+            "auxiliary_power_w"
+          ],
+          "description": "Prescribed head/flow with constant efficiencies.",
+          "output_scope": "prescribed hydraulic inlet to net electrical bus",
+          "domain_reference": "docs/reference-models.md",
+          "empirical_validation": "deferred"
+        },
+        "metrics": {
+          "hydraulic_power": {
+            "value": 9806.65,
+            "unit": "W",
+            "scope": "prescribed hydraulic inlet to net electrical bus"
+          },
+          "shaft_power": {
+            "value": 8335.6525,
+            "unit": "W",
+            "scope": "prescribed hydraulic inlet to net electrical bus"
+          },
+          "gross_electric_power": {
+            "value": 7752.156825000001,
+            "unit": "W",
+            "scope": "prescribed hydraulic inlet to net electrical bus"
+          },
+          "auxiliary_power": {
+            "value": 200,
+            "unit": "W",
+            "scope": "prescribed hydraulic inlet to net electrical bus"
+          },
+          "net_electric_power": {
+            "value": 7552.156825000001,
+            "unit": "W",
+            "scope": "prescribed hydraulic inlet to net electrical bus"
+          },
+          "conversion_losses": {
+            "value": 2054.4931749999987,
+            "unit": "W",
+            "scope": "prescribed hydraulic inlet to net electrical bus"
+          }
+        },
+        "diagnostics": {
+          "energy_balance_residual_w": 1.8189894035458565e-12
+        },
+        "series": {},
+        "warnings": [
+          "Head is net available head after upstream hydraulic losses.",
+          "Constant head, flow, density and efficiencies; no reservoir, resource-duration, cavitation or dispatch model.",
+          "Negative net power is preserved as an importing operating point."
+        ],
+        "validation_status": "computational_reference_checks_only_not_empirically_validated",
+        "evidence_manifest": "evidence/references.md",
+        "economics": {
+          "status": "illustrative_not_market_data",
+          "basis": {
+            "currency": "USD",
+            "price_year": 2026,
+            "region": "hypothetical, no geographic price calibration",
+            "assumption_status": "illustrative_not_market_data",
+            "lifetime_years": 20,
+            "real_discount_rate": 0.05,
+            "operating_hours_per_year": 4000,
+            "capital_items": [
+              {
+                "name": "illustrative turbine-generator package",
+                "quantity": 1,
+                "quantity_unit": "package",
+                "unit_cost": 30000
+              },
+              {
+                "name": "illustrative installation allowance",
+                "quantity": 1,
+                "quantity_unit": "allowance",
+                "unit_cost": 20000
+              }
+            ],
+            "annual_opex": 1500,
+            "decommissioning_cost": 5000
+          },
+          "capital_breakdown": [
+            {
+              "name": "illustrative turbine-generator package",
+              "quantity": 1,
+              "quantity_unit": "package",
+              "unit_cost": 30000,
+              "total_cost": 30000
+            },
+            {
+              "name": "illustrative installation allowance",
+              "quantity": 1,
+              "quantity_unit": "allowance",
+              "unit_cost": 20000,
+              "total_cost": 20000
+            }
+          ],
+          "metrics": {
+            "initial_capital_cost": {
+              "value": 50000,
+              "unit": "USD",
+              "scope": "listed capital items only"
+            },
+            "annual_delivered_energy": {
+              "value": 30208.627300000004,
+              "unit": "kWh/year",
+              "scope": "constant modeled net power times assumed operating hours"
+            },
+            "discounted_lifecycle_cost": {
+              "value": 70577.76292817497,
+              "unit": "USD",
+              "scope": "listed costs; initial capital at year zero; other costs at year end"
+            },
+            "lcoe": {
+              "value": 0.18747433437626024,
+              "unit": "USD/kWh",
+              "scope": "discounted listed costs / discounted net delivered electricity"
+            }
+          },
+          "warnings": [
+            "Illustrative user-entered prices; no market-price or supply-chain evidence.",
+            "Constant net output during assumed operating hours; availability is not predicted.",
+            "Constant real costs; no escalation, degradation, financing schedule, taxes, subsidies, or replacement schedule.",
+            "Omitted costs are not proven zero. Include fuel and heat-source costs in annual_opex when relevant.",
+            "Not suitable for a cross-technology ranking without matching scope and completeness."
+          ]
+        },
+        "unsupported_outputs": [
+          "deployment_feasibility",
+          "supply_chain",
+          "propulsion",
+          "transient_dynamics"
+        ]
+      }
+    },
+    {
+      "case_id": "hydropower-sensitivity:0005",
+      "settings": {
+        "flow_m3_s": 0.2,
+        "head_m": 10
+      },
+      "status": "completed",
+      "result": {
+        "schema_version": "0.1.0",
+        "status": "completed_reference_model",
+        "study_id": "hydropower-sensitivity:0005",
+        "technology": "hydropower",
+        "model_id": "hydropower_reference_v1",
+        "engine_version": "0.2.0",
+        "input_sha256": "7160a6b61be609b37da9468840b1b58178a0d963885a68e3580de128d59fab8b",
+        "implementation_sha256": "6741a8e1fcadee6ed6cba9597bde4d544f3a19d901e9a01e23144fba2390f9de",
+        "input_snapshot": {
+          "schema_version": "0.1.0",
+          "study_id": "hydropower-sensitivity:0005",
+          "technology": "hydropower",
+          "assumptions": [
+            "A hypothetical hydraulic operating point with prescribed net head and flow, not a site resource forecast.",
+            "The economic inputs are invented demonstration values, not supplier quotes or market estimates.",
+            "Annual operation is assumed at this fixed operating point for 4000 hours; no seasonal analysis is performed."
+          ],
+          "parameters": {
+            "head_m": 10,
+            "flow_m3_s": 0.2,
+            "water_density_kg_m3": 1000,
+            "turbine_efficiency": 0.85,
+            "generator_efficiency": 0.93,
+            "auxiliary_power_w": 200
+          },
+          "economics": {
+            "currency": "USD",
+            "price_year": 2026,
+            "region": "hypothetical, no geographic price calibration",
+            "assumption_status": "illustrative_not_market_data",
+            "lifetime_years": 20,
+            "real_discount_rate": 0.05,
+            "operating_hours_per_year": 4000,
+            "capital_items": [
+              {
+                "name": "illustrative turbine-generator package",
+                "quantity": 1,
+                "quantity_unit": "package",
+                "unit_cost": 30000
+              },
+              {
+                "name": "illustrative installation allowance",
+                "quantity": 1,
+                "quantity_unit": "allowance",
+                "unit_cost": 20000
+              }
+            ],
+            "annual_opex": 1500,
+            "decommissioning_cost": 5000
+          }
+        },
+        "normalized_parameters": {
+          "head_m": 10,
+          "flow_m3_s": 0.2,
+          "water_density_kg_m3": 1000,
+          "turbine_efficiency": 0.85,
+          "generator_efficiency": 0.93,
+          "auxiliary_power_w": 200
+        },
+        "model_definition": {
+          "technology": "hydropower",
+          "model_id": "hydropower_reference_v1",
+          "execution_mode": "steady_operating_point",
+          "parameter_units": {
+            "head_m": "m",
+            "flow_m3_s": "m3/s",
+            "water_density_kg_m3": "kg/m3",
+            "turbine_efficiency": "1",
+            "generator_efficiency": "1",
+            "auxiliary_power_w": "W"
+          },
+          "required_parameters": [
+            "head_m",
+            "flow_m3_s",
+            "water_density_kg_m3",
+            "turbine_efficiency",
+            "generator_efficiency",
+            "auxiliary_power_w"
+          ],
+          "description": "Prescribed head/flow with constant efficiencies.",
+          "output_scope": "prescribed hydraulic inlet to net electrical bus",
+          "domain_reference": "docs/reference-models.md",
+          "empirical_validation": "deferred"
+        },
+        "metrics": {
+          "hydraulic_power": {
+            "value": 19613.3,
+            "unit": "W",
+            "scope": "prescribed hydraulic inlet to net electrical bus"
+          },
+          "shaft_power": {
+            "value": 16671.305,
+            "unit": "W",
+            "scope": "prescribed hydraulic inlet to net electrical bus"
+          },
+          "gross_electric_power": {
+            "value": 15504.313650000002,
+            "unit": "W",
+            "scope": "prescribed hydraulic inlet to net electrical bus"
+          },
+          "auxiliary_power": {
+            "value": 200,
+            "unit": "W",
+            "scope": "prescribed hydraulic inlet to net electrical bus"
+          },
+          "net_electric_power": {
+            "value": 15304.313650000002,
+            "unit": "W",
+            "scope": "prescribed hydraulic inlet to net electrical bus"
+          },
+          "conversion_losses": {
+            "value": 4108.986349999997,
+            "unit": "W",
+            "scope": "prescribed hydraulic inlet to net electrical bus"
+          }
+        },
+        "diagnostics": {
+          "energy_balance_residual_w": 3.637978807091713e-12
+        },
+        "series": {},
+        "warnings": [
+          "Head is net available head after upstream hydraulic losses.",
+          "Constant head, flow, density and efficiencies; no reservoir, resource-duration, cavitation or dispatch model.",
+          "Negative net power is preserved as an importing operating point."
+        ],
+        "validation_status": "computational_reference_checks_only_not_empirically_validated",
+        "evidence_manifest": "evidence/references.md",
+        "economics": {
+          "status": "illustrative_not_market_data",
+          "basis": {
+            "currency": "USD",
+            "price_year": 2026,
+            "region": "hypothetical, no geographic price calibration",
+            "assumption_status": "illustrative_not_market_data",
+            "lifetime_years": 20,
+            "real_discount_rate": 0.05,
+            "operating_hours_per_year": 4000,
+            "capital_items": [
+              {
+                "name": "illustrative turbine-generator package",
+                "quantity": 1,
+                "quantity_unit": "package",
+                "unit_cost": 30000
+              },
+              {
+                "name": "illustrative installation allowance",
+                "quantity": 1,
+                "quantity_unit": "allowance",
+                "unit_cost": 20000
+              }
+            ],
+            "annual_opex": 1500,
+            "decommissioning_cost": 5000
+          },
+          "capital_breakdown": [
+            {
+              "name": "illustrative turbine-generator package",
+              "quantity": 1,
+              "quantity_unit": "package",
+              "unit_cost": 30000,
+              "total_cost": 30000
+            },
+            {
+              "name": "illustrative installation allowance",
+              "quantity": 1,
+              "quantity_unit": "allowance",
+              "unit_cost": 20000,
+              "total_cost": 20000
+            }
+          ],
+          "metrics": {
+            "initial_capital_cost": {
+              "value": 50000,
+              "unit": "USD",
+              "scope": "listed capital items only"
+            },
+            "annual_delivered_energy": {
+              "value": 61217.25460000001,
+              "unit": "kWh/year",
+              "scope": "constant modeled net power times assumed operating hours"
+            },
+            "discounted_lifecycle_cost": {
+              "value": 70577.76292817497,
+              "unit": "USD",
+              "scope": "listed costs; initial capital at year zero; other costs at year end"
+            },
+            "lcoe": {
+              "value": 0.0925121901087022,
+              "unit": "USD/kWh",
+              "scope": "discounted listed costs / discounted net delivered electricity"
+            }
+          },
+          "warnings": [
+            "Illustrative user-entered prices; no market-price or supply-chain evidence.",
+            "Constant net output during assumed operating hours; availability is not predicted.",
+            "Constant real costs; no escalation, degradation, financing schedule, taxes, subsidies, or replacement schedule.",
+            "Omitted costs are not proven zero. Include fuel and heat-source costs in annual_opex when relevant.",
+            "Not suitable for a cross-technology ranking without matching scope and completeness."
+          ]
+        },
+        "unsupported_outputs": [
+          "deployment_feasibility",
+          "supply_chain",
+          "propulsion",
+          "transient_dynamics"
+        ]
+      }
+    },
+    {
+      "case_id": "hydropower-sensitivity:0006",
+      "settings": {
+        "flow_m3_s": 0.2,
+        "head_m": 20
+      },
+      "status": "completed",
+      "result": {
+        "schema_version": "0.1.0",
+        "status": "completed_reference_model",
+        "study_id": "hydropower-sensitivity:0006",
+        "technology": "hydropower",
+        "model_id": "hydropower_reference_v1",
+        "engine_version": "0.2.0",
+        "input_sha256": "aaf6036437f10467e1845a8a98911bdc210eb1d8343bcc6fdea0cbbce1d29b93",
+        "implementation_sha256": "6741a8e1fcadee6ed6cba9597bde4d544f3a19d901e9a01e23144fba2390f9de",
+        "input_snapshot": {
+          "schema_version": "0.1.0",
+          "study_id": "hydropower-sensitivity:0006",
+          "technology": "hydropower",
+          "assumptions": [
+            "A hypothetical hydraulic operating point with prescribed net head and flow, not a site resource forecast.",
+            "The economic inputs are invented demonstration values, not supplier quotes or market estimates.",
+            "Annual operation is assumed at this fixed operating point for 4000 hours; no seasonal analysis is performed."
+          ],
+          "parameters": {
+            "head_m": 20,
+            "flow_m3_s": 0.2,
+            "water_density_kg_m3": 1000,
+            "turbine_efficiency": 0.85,
+            "generator_efficiency": 0.93,
+            "auxiliary_power_w": 200
+          },
+          "economics": {
+            "currency": "USD",
+            "price_year": 2026,
+            "region": "hypothetical, no geographic price calibration",
+            "assumption_status": "illustrative_not_market_data",
+            "lifetime_years": 20,
+            "real_discount_rate": 0.05,
+            "operating_hours_per_year": 4000,
+            "capital_items": [
+              {
+                "name": "illustrative turbine-generator package",
+                "quantity": 1,
+                "quantity_unit": "package",
+                "unit_cost": 30000
+              },
+              {
+                "name": "illustrative installation allowance",
+                "quantity": 1,
+                "quantity_unit": "allowance",
+                "unit_cost": 20000
+              }
+            ],
+            "annual_opex": 1500,
+            "decommissioning_cost": 5000
+          }
+        },
+        "normalized_parameters": {
+          "head_m": 20,
+          "flow_m3_s": 0.2,
+          "water_density_kg_m3": 1000,
+          "turbine_efficiency": 0.85,
+          "generator_efficiency": 0.93,
+          "auxiliary_power_w": 200
+        },
+        "model_definition": {
+          "technology": "hydropower",
+          "model_id": "hydropower_reference_v1",
+          "execution_mode": "steady_operating_point",
+          "parameter_units": {
+            "head_m": "m",
+            "flow_m3_s": "m3/s",
+            "water_density_kg_m3": "kg/m3",
+            "turbine_efficiency": "1",
+            "generator_efficiency": "1",
+            "auxiliary_power_w": "W"
+          },
+          "required_parameters": [
+            "head_m",
+            "flow_m3_s",
+            "water_density_kg_m3",
+            "turbine_efficiency",
+            "generator_efficiency",
+            "auxiliary_power_w"
+          ],
+          "description": "Prescribed head/flow with constant efficiencies.",
+          "output_scope": "prescribed hydraulic inlet to net electrical bus",
+          "domain_reference": "docs/reference-models.md",
+          "empirical_validation": "deferred"
+        },
+        "metrics": {
+          "hydraulic_power": {
+            "value": 39226.6,
+            "unit": "W",
+            "scope": "prescribed hydraulic inlet to net electrical bus"
+          },
+          "shaft_power": {
+            "value": 33342.61,
+            "unit": "W",
+            "scope": "prescribed hydraulic inlet to net electrical bus"
+          },
+          "gross_electric_power": {
+            "value": 31008.627300000004,
+            "unit": "W",
+            "scope": "prescribed hydraulic inlet to net electrical bus"
+          },
+          "auxiliary_power": {
+            "value": 200,
+            "unit": "W",
+            "scope": "prescribed hydraulic inlet to net electrical bus"
+          },
+          "net_electric_power": {
+            "value": 30808.627300000004,
+            "unit": "W",
+            "scope": "prescribed hydraulic inlet to net electrical bus"
+          },
+          "conversion_losses": {
+            "value": 8217.972699999995,
+            "unit": "W",
+            "scope": "prescribed hydraulic inlet to net electrical bus"
+          }
+        },
+        "diagnostics": {
+          "energy_balance_residual_w": 7.275957614183426e-12
+        },
+        "series": {},
+        "warnings": [
+          "Head is net available head after upstream hydraulic losses.",
+          "Constant head, flow, density and efficiencies; no reservoir, resource-duration, cavitation or dispatch model.",
+          "Negative net power is preserved as an importing operating point."
+        ],
+        "validation_status": "computational_reference_checks_only_not_empirically_validated",
+        "evidence_manifest": "evidence/references.md",
+        "economics": {
+          "status": "illustrative_not_market_data",
+          "basis": {
+            "currency": "USD",
+            "price_year": 2026,
+            "region": "hypothetical, no geographic price calibration",
+            "assumption_status": "illustrative_not_market_data",
+            "lifetime_years": 20,
+            "real_discount_rate": 0.05,
+            "operating_hours_per_year": 4000,
+            "capital_items": [
+              {
+                "name": "illustrative turbine-generator package",
+                "quantity": 1,
+                "quantity_unit": "package",
+                "unit_cost": 30000
+              },
+              {
+                "name": "illustrative installation allowance",
+                "quantity": 1,
+                "quantity_unit": "allowance",
+                "unit_cost": 20000
+              }
+            ],
+            "annual_opex": 1500,
+            "decommissioning_cost": 5000
+          },
+          "capital_breakdown": [
+            {
+              "name": "illustrative turbine-generator package",
+              "quantity": 1,
+              "quantity_unit": "package",
+              "unit_cost": 30000,
+              "total_cost": 30000
+            },
+            {
+              "name": "illustrative installation allowance",
+              "quantity": 1,
+              "quantity_unit": "allowance",
+              "unit_cost": 20000,
+              "total_cost": 20000
+            }
+          ],
+          "metrics": {
+            "initial_capital_cost": {
+              "value": 50000,
+              "unit": "USD",
+              "scope": "listed capital items only"
+            },
+            "annual_delivered_energy": {
+              "value": 123234.50920000001,
+              "unit": "kWh/year",
+              "scope": "constant modeled net power times assumed operating hours"
+            },
+            "discounted_lifecycle_cost": {
+              "value": 70577.76292817497,
+              "unit": "USD",
+              "scope": "listed costs; initial capital at year zero; other costs at year end"
+            },
+            "lcoe": {
+              "value": 0.04595581491136432,
+              "unit": "USD/kWh",
+              "scope": "discounted listed costs / discounted net delivered electricity"
+            }
+          },
+          "warnings": [
+            "Illustrative user-entered prices; no market-price or supply-chain evidence.",
+            "Constant net output during assumed operating hours; availability is not predicted.",
+            "Constant real costs; no escalation, degradation, financing schedule, taxes, subsidies, or replacement schedule.",
+            "Omitted costs are not proven zero. Include fuel and heat-source costs in annual_opex when relevant.",
+            "Not suitable for a cross-technology ranking without matching scope and completeness."
+          ]
+        },
+        "unsupported_outputs": [
+          "deployment_feasibility",
+          "supply_chain",
+          "propulsion",
+          "transient_dynamics"
+        ]
+      }
+    },
+    {
+      "case_id": "hydropower-sensitivity:0007",
+      "settings": {
+        "flow_m3_s": 0.4,
+        "head_m": 5
+      },
+      "status": "completed",
+      "result": {
+        "schema_version": "0.1.0",
+        "status": "completed_reference_model",
+        "study_id": "hydropower-sensitivity:0007",
+        "technology": "hydropower",
+        "model_id": "hydropower_reference_v1",
+        "engine_version": "0.2.0",
+        "input_sha256": "018b2304df7445f5e505e01710dae456d8cc20aaba903275e9619bf98a5cb323",
+        "implementation_sha256": "6741a8e1fcadee6ed6cba9597bde4d544f3a19d901e9a01e23144fba2390f9de",
+        "input_snapshot": {
+          "schema_version": "0.1.0",
+          "study_id": "hydropower-sensitivity:0007",
+          "technology": "hydropower",
+          "assumptions": [
+            "A hypothetical hydraulic operating point with prescribed net head and flow, not a site resource forecast.",
+            "The economic inputs are invented demonstration values, not supplier quotes or market estimates.",
+            "Annual operation is assumed at this fixed operating point for 4000 hours; no seasonal analysis is performed."
+          ],
+          "parameters": {
+            "head_m": 5,
+            "flow_m3_s": 0.4,
+            "water_density_kg_m3": 1000,
+            "turbine_efficiency": 0.85,
+            "generator_efficiency": 0.93,
+            "auxiliary_power_w": 200
+          },
+          "economics": {
+            "currency": "USD",
+            "price_year": 2026,
+            "region": "hypothetical, no geographic price calibration",
+            "assumption_status": "illustrative_not_market_data",
+            "lifetime_years": 20,
+            "real_discount_rate": 0.05,
+            "operating_hours_per_year": 4000,
+            "capital_items": [
+              {
+                "name": "illustrative turbine-generator package",
+                "quantity": 1,
+                "quantity_unit": "package",
+                "unit_cost": 30000
+              },
+              {
+                "name": "illustrative installation allowance",
+                "quantity": 1,
+                "quantity_unit": "allowance",
+                "unit_cost": 20000
+              }
+            ],
+            "annual_opex": 1500,
+            "decommissioning_cost": 5000
+          }
+        },
+        "normalized_parameters": {
+          "head_m": 5,
+          "flow_m3_s": 0.4,
+          "water_density_kg_m3": 1000,
+          "turbine_efficiency": 0.85,
+          "generator_efficiency": 0.93,
+          "auxiliary_power_w": 200
+        },
+        "model_definition": {
+          "technology": "hydropower",
+          "model_id": "hydropower_reference_v1",
+          "execution_mode": "steady_operating_point",
+          "parameter_units": {
+            "head_m": "m",
+            "flow_m3_s": "m3/s",
+            "water_density_kg_m3": "kg/m3",
+            "turbine_efficiency": "1",
+            "generator_efficiency": "1",
+            "auxiliary_power_w": "W"
+          },
+          "required_parameters": [
+            "head_m",
+            "flow_m3_s",
+            "water_density_kg_m3",
+            "turbine_efficiency",
+            "generator_efficiency",
+            "auxiliary_power_w"
+          ],
+          "description": "Prescribed head/flow with constant efficiencies.",
+          "output_scope": "prescribed hydraulic inlet to net electrical bus",
+          "domain_reference": "docs/reference-models.md",
+          "empirical_validation": "deferred"
+        },
+        "metrics": {
+          "hydraulic_power": {
+            "value": 19613.3,
+            "unit": "W",
+            "scope": "prescribed hydraulic inlet to net electrical bus"
+          },
+          "shaft_power": {
+            "value": 16671.305,
+            "unit": "W",
+            "scope": "prescribed hydraulic inlet to net electrical bus"
+          },
+          "gross_electric_power": {
+            "value": 15504.313650000002,
+            "unit": "W",
+            "scope": "prescribed hydraulic inlet to net electrical bus"
+          },
+          "auxiliary_power": {
+            "value": 200,
+            "unit": "W",
+            "scope": "prescribed hydraulic inlet to net electrical bus"
+          },
+          "net_electric_power": {
+            "value": 15304.313650000002,
+            "unit": "W",
+            "scope": "prescribed hydraulic inlet to net electrical bus"
+          },
+          "conversion_losses": {
+            "value": 4108.986349999997,
+            "unit": "W",
+            "scope": "prescribed hydraulic inlet to net electrical bus"
+          }
+        },
+        "diagnostics": {
+          "energy_balance_residual_w": 3.637978807091713e-12
+        },
+        "series": {},
+        "warnings": [
+          "Head is net available head after upstream hydraulic losses.",
+          "Constant head, flow, density and efficiencies; no reservoir, resource-duration, cavitation or dispatch model.",
+          "Negative net power is preserved as an importing operating point."
+        ],
+        "validation_status": "computational_reference_checks_only_not_empirically_validated",
+        "evidence_manifest": "evidence/references.md",
+        "economics": {
+          "status": "illustrative_not_market_data",
+          "basis": {
+            "currency": "USD",
+            "price_year": 2026,
+            "region": "hypothetical, no geographic price calibration",
+            "assumption_status": "illustrative_not_market_data",
+            "lifetime_years": 20,
+            "real_discount_rate": 0.05,
+            "operating_hours_per_year": 4000,
+            "capital_items": [
+              {
+                "name": "illustrative turbine-generator package",
+                "quantity": 1,
+                "quantity_unit": "package",
+                "unit_cost": 30000
+              },
+              {
+                "name": "illustrative installation allowance",
+                "quantity": 1,
+                "quantity_unit": "allowance",
+                "unit_cost": 20000
+              }
+            ],
+            "annual_opex": 1500,
+            "decommissioning_cost": 5000
+          },
+          "capital_breakdown": [
+            {
+              "name": "illustrative turbine-generator package",
+              "quantity": 1,
+              "quantity_unit": "package",
+              "unit_cost": 30000,
+              "total_cost": 30000
+            },
+            {
+              "name": "illustrative installation allowance",
+              "quantity": 1,
+              "quantity_unit": "allowance",
+              "unit_cost": 20000,
+              "total_cost": 20000
+            }
+          ],
+          "metrics": {
+            "initial_capital_cost": {
+              "value": 50000,
+              "unit": "USD",
+              "scope": "listed capital items only"
+            },
+            "annual_delivered_energy": {
+              "value": 61217.25460000001,
+              "unit": "kWh/year",
+              "scope": "constant modeled net power times assumed operating hours"
+            },
+            "discounted_lifecycle_cost": {
+              "value": 70577.76292817497,
+              "unit": "USD",
+              "scope": "listed costs; initial capital at year zero; other costs at year end"
+            },
+            "lcoe": {
+              "value": 0.0925121901087022,
+              "unit": "USD/kWh",
+              "scope": "discounted listed costs / discounted net delivered electricity"
+            }
+          },
+          "warnings": [
+            "Illustrative user-entered prices; no market-price or supply-chain evidence.",
+            "Constant net output during assumed operating hours; availability is not predicted.",
+            "Constant real costs; no escalation, degradation, financing schedule, taxes, subsidies, or replacement schedule.",
+            "Omitted costs are not proven zero. Include fuel and heat-source costs in annual_opex when relevant.",
+            "Not suitable for a cross-technology ranking without matching scope and completeness."
+          ]
+        },
+        "unsupported_outputs": [
+          "deployment_feasibility",
+          "supply_chain",
+          "propulsion",
+          "transient_dynamics"
+        ]
+      }
+    },
+    {
+      "case_id": "hydropower-sensitivity:0008",
+      "settings": {
+        "flow_m3_s": 0.4,
+        "head_m": 10
+      },
+      "status": "completed",
+      "result": {
+        "schema_version": "0.1.0",
+        "status": "completed_reference_model",
+        "study_id": "hydropower-sensitivity:0008",
+        "technology": "hydropower",
+        "model_id": "hydropower_reference_v1",
+        "engine_version": "0.2.0",
+        "input_sha256": "6a520a6b10a2fa5cd1a981cd91fe9dab992c5526a064e85082fa8377639369a1",
+        "implementation_sha256": "6741a8e1fcadee6ed6cba9597bde4d544f3a19d901e9a01e23144fba2390f9de",
+        "input_snapshot": {
+          "schema_version": "0.1.0",
+          "study_id": "hydropower-sensitivity:0008",
+          "technology": "hydropower",
+          "assumptions": [
+            "A hypothetical hydraulic operating point with prescribed net head and flow, not a site resource forecast.",
+            "The economic inputs are invented demonstration values, not supplier quotes or market estimates.",
+            "Annual operation is assumed at this fixed operating point for 4000 hours; no seasonal analysis is performed."
+          ],
+          "parameters": {
+            "head_m": 10,
+            "flow_m3_s": 0.4,
+            "water_density_kg_m3": 1000,
+            "turbine_efficiency": 0.85,
+            "generator_efficiency": 0.93,
+            "auxiliary_power_w": 200
+          },
+          "economics": {
+            "currency": "USD",
+            "price_year": 2026,
+            "region": "hypothetical, no geographic price calibration",
+            "assumption_status": "illustrative_not_market_data",
+            "lifetime_years": 20,
+            "real_discount_rate": 0.05,
+            "operating_hours_per_year": 4000,
+            "capital_items": [
+              {
+                "name": "illustrative turbine-generator package",
+                "quantity": 1,
+                "quantity_unit": "package",
+                "unit_cost": 30000
+              },
+              {
+                "name": "illustrative installation allowance",
+                "quantity": 1,
+                "quantity_unit": "allowance",
+                "unit_cost": 20000
+              }
+            ],
+            "annual_opex": 1500,
+            "decommissioning_cost": 5000
+          }
+        },
+        "normalized_parameters": {
+          "head_m": 10,
+          "flow_m3_s": 0.4,
+          "water_density_kg_m3": 1000,
+          "turbine_efficiency": 0.85,
+          "generator_efficiency": 0.93,
+          "auxiliary_power_w": 200
+        },
+        "model_definition": {
+          "technology": "hydropower",
+          "model_id": "hydropower_reference_v1",
+          "execution_mode": "steady_operating_point",
+          "parameter_units": {
+            "head_m": "m",
+            "flow_m3_s": "m3/s",
+            "water_density_kg_m3": "kg/m3",
+            "turbine_efficiency": "1",
+            "generator_efficiency": "1",
+            "auxiliary_power_w": "W"
+          },
+          "required_parameters": [
+            "head_m",
+            "flow_m3_s",
+            "water_density_kg_m3",
+            "turbine_efficiency",
+            "generator_efficiency",
+            "auxiliary_power_w"
+          ],
+          "description": "Prescribed head/flow with constant efficiencies.",
+          "output_scope": "prescribed hydraulic inlet to net electrical bus",
+          "domain_reference": "docs/reference-models.md",
+          "empirical_validation": "deferred"
+        },
+        "metrics": {
+          "hydraulic_power": {
+            "value": 39226.6,
+            "unit": "W",
+            "scope": "prescribed hydraulic inlet to net electrical bus"
+          },
+          "shaft_power": {
+            "value": 33342.61,
+            "unit": "W",
+            "scope": "prescribed hydraulic inlet to net electrical bus"
+          },
+          "gross_electric_power": {
+            "value": 31008.627300000004,
+            "unit": "W",
+            "scope": "prescribed hydraulic inlet to net electrical bus"
+          },
+          "auxiliary_power": {
+            "value": 200,
+            "unit": "W",
+            "scope": "prescribed hydraulic inlet to net electrical bus"
+          },
+          "net_electric_power": {
+            "value": 30808.627300000004,
+            "unit": "W",
+            "scope": "prescribed hydraulic inlet to net electrical bus"
+          },
+          "conversion_losses": {
+            "value": 8217.972699999995,
+            "unit": "W",
+            "scope": "prescribed hydraulic inlet to net electrical bus"
+          }
+        },
+        "diagnostics": {
+          "energy_balance_residual_w": 7.275957614183426e-12
+        },
+        "series": {},
+        "warnings": [
+          "Head is net available head after upstream hydraulic losses.",
+          "Constant head, flow, density and efficiencies; no reservoir, resource-duration, cavitation or dispatch model.",
+          "Negative net power is preserved as an importing operating point."
+        ],
+        "validation_status": "computational_reference_checks_only_not_empirically_validated",
+        "evidence_manifest": "evidence/references.md",
+        "economics": {
+          "status": "illustrative_not_market_data",
+          "basis": {
+            "currency": "USD",
+            "price_year": 2026,
+            "region": "hypothetical, no geographic price calibration",
+            "assumption_status": "illustrative_not_market_data",
+            "lifetime_years": 20,
+            "real_discount_rate": 0.05,
+            "operating_hours_per_year": 4000,
+            "capital_items": [
+              {
+                "name": "illustrative turbine-generator package",
+                "quantity": 1,
+                "quantity_unit": "package",
+                "unit_cost": 30000
+              },
+              {
+                "name": "illustrative installation allowance",
+                "quantity": 1,
+                "quantity_unit": "allowance",
+                "unit_cost": 20000
+              }
+            ],
+            "annual_opex": 1500,
+            "decommissioning_cost": 5000
+          },
+          "capital_breakdown": [
+            {
+              "name": "illustrative turbine-generator package",
+              "quantity": 1,
+              "quantity_unit": "package",
+              "unit_cost": 30000,
+              "total_cost": 30000
+            },
+            {
+              "name": "illustrative installation allowance",
+              "quantity": 1,
+              "quantity_unit": "allowance",
+              "unit_cost": 20000,
+              "total_cost": 20000
+            }
+          ],
+          "metrics": {
+            "initial_capital_cost": {
+              "value": 50000,
+              "unit": "USD",
+              "scope": "listed capital items only"
+            },
+            "annual_delivered_energy": {
+              "value": 123234.50920000001,
+              "unit": "kWh/year",
+              "scope": "constant modeled net power times assumed operating hours"
+            },
+            "discounted_lifecycle_cost": {
+              "value": 70577.76292817497,
+              "unit": "USD",
+              "scope": "listed costs; initial capital at year zero; other costs at year end"
+            },
+            "lcoe": {
+              "value": 0.04595581491136432,
+              "unit": "USD/kWh",
+              "scope": "discounted listed costs / discounted net delivered electricity"
+            }
+          },
+          "warnings": [
+            "Illustrative user-entered prices; no market-price or supply-chain evidence.",
+            "Constant net output during assumed operating hours; availability is not predicted.",
+            "Constant real costs; no escalation, degradation, financing schedule, taxes, subsidies, or replacement schedule.",
+            "Omitted costs are not proven zero. Include fuel and heat-source costs in annual_opex when relevant.",
+            "Not suitable for a cross-technology ranking without matching scope and completeness."
+          ]
+        },
+        "unsupported_outputs": [
+          "deployment_feasibility",
+          "supply_chain",
+          "propulsion",
+          "transient_dynamics"
+        ]
+      }
+    },
+    {
+      "case_id": "hydropower-sensitivity:0009",
+      "settings": {
+        "flow_m3_s": 0.4,
+        "head_m": 20
+      },
+      "status": "completed",
+      "result": {
+        "schema_version": "0.1.0",
+        "status": "completed_reference_model",
+        "study_id": "hydropower-sensitivity:0009",
+        "technology": "hydropower",
+        "model_id": "hydropower_reference_v1",
+        "engine_version": "0.2.0",
+        "input_sha256": "5b6122d3e68388b9585ca6d8f413ffd875d71889fe281dac59cfaa63dc4754f4",
+        "implementation_sha256": "6741a8e1fcadee6ed6cba9597bde4d544f3a19d901e9a01e23144fba2390f9de",
+        "input_snapshot": {
+          "schema_version": "0.1.0",
+          "study_id": "hydropower-sensitivity:0009",
+          "technology": "hydropower",
+          "assumptions": [
+            "A hypothetical hydraulic operating point with prescribed net head and flow, not a site resource forecast.",
+            "The economic inputs are invented demonstration values, not supplier quotes or market estimates.",
+            "Annual operation is assumed at this fixed operating point for 4000 hours; no seasonal analysis is performed."
+          ],
+          "parameters": {
+            "head_m": 20,
+            "flow_m3_s": 0.4,
+            "water_density_kg_m3": 1000,
+            "turbine_efficiency": 0.85,
+            "generator_efficiency": 0.93,
+            "auxiliary_power_w": 200
+          },
+          "economics": {
+            "currency": "USD",
+            "price_year": 2026,
+            "region": "hypothetical, no geographic price calibration",
+            "assumption_status": "illustrative_not_market_data",
+            "lifetime_years": 20,
+            "real_discount_rate": 0.05,
+            "operating_hours_per_year": 4000,
+            "capital_items": [
+              {
+                "name": "illustrative turbine-generator package",
+                "quantity": 1,
+                "quantity_unit": "package",
+                "unit_cost": 30000
+              },
+              {
+                "name": "illustrative installation allowance",
+                "quantity": 1,
+                "quantity_unit": "allowance",
+                "unit_cost": 20000
+              }
+            ],
+            "annual_opex": 1500,
+            "decommissioning_cost": 5000
+          }
+        },
+        "normalized_parameters": {
+          "head_m": 20,
+          "flow_m3_s": 0.4,
+          "water_density_kg_m3": 1000,
+          "turbine_efficiency": 0.85,
+          "generator_efficiency": 0.93,
+          "auxiliary_power_w": 200
+        },
+        "model_definition": {
+          "technology": "hydropower",
+          "model_id": "hydropower_reference_v1",
+          "execution_mode": "steady_operating_point",
+          "parameter_units": {
+            "head_m": "m",
+            "flow_m3_s": "m3/s",
+            "water_density_kg_m3": "kg/m3",
+            "turbine_efficiency": "1",
+            "generator_efficiency": "1",
+            "auxiliary_power_w": "W"
+          },
+          "required_parameters": [
+            "head_m",
+            "flow_m3_s",
+            "water_density_kg_m3",
+            "turbine_efficiency",
+            "generator_efficiency",
+            "auxiliary_power_w"
+          ],
+          "description": "Prescribed head/flow with constant efficiencies.",
+          "output_scope": "prescribed hydraulic inlet to net electrical bus",
+          "domain_reference": "docs/reference-models.md",
+          "empirical_validation": "deferred"
+        },
+        "metrics": {
+          "hydraulic_power": {
+            "value": 78453.2,
+            "unit": "W",
+            "scope": "prescribed hydraulic inlet to net electrical bus"
+          },
+          "shaft_power": {
+            "value": 66685.22,
+            "unit": "W",
+            "scope": "prescribed hydraulic inlet to net electrical bus"
+          },
+          "gross_electric_power": {
+            "value": 62017.25460000001,
+            "unit": "W",
+            "scope": "prescribed hydraulic inlet to net electrical bus"
+          },
+          "auxiliary_power": {
+            "value": 200,
+            "unit": "W",
+            "scope": "prescribed hydraulic inlet to net electrical bus"
+          },
+          "net_electric_power": {
+            "value": 61817.25460000001,
+            "unit": "W",
+            "scope": "prescribed hydraulic inlet to net electrical bus"
+          },
+          "conversion_losses": {
+            "value": 16435.94539999999,
+            "unit": "W",
+            "scope": "prescribed hydraulic inlet to net electrical bus"
+          }
+        },
+        "diagnostics": {
+          "energy_balance_residual_w": 1.4551915228366852e-11
+        },
+        "series": {},
+        "warnings": [
+          "Head is net available head after upstream hydraulic losses.",
+          "Constant head, flow, density and efficiencies; no reservoir, resource-duration, cavitation or dispatch model.",
+          "Negative net power is preserved as an importing operating point."
+        ],
+        "validation_status": "computational_reference_checks_only_not_empirically_validated",
+        "evidence_manifest": "evidence/references.md",
+        "economics": {
+          "status": "illustrative_not_market_data",
+          "basis": {
+            "currency": "USD",
+            "price_year": 2026,
+            "region": "hypothetical, no geographic price calibration",
+            "assumption_status": "illustrative_not_market_data",
+            "lifetime_years": 20,
+            "real_discount_rate": 0.05,
+            "operating_hours_per_year": 4000,
+            "capital_items": [
+              {
+                "name": "illustrative turbine-generator package",
+                "quantity": 1,
+                "quantity_unit": "package",
+                "unit_cost": 30000
+              },
+              {
+                "name": "illustrative installation allowance",
+                "quantity": 1,
+                "quantity_unit": "allowance",
+                "unit_cost": 20000
+              }
+            ],
+            "annual_opex": 1500,
+            "decommissioning_cost": 5000
+          },
+          "capital_breakdown": [
+            {
+              "name": "illustrative turbine-generator package",
+              "quantity": 1,
+              "quantity_unit": "package",
+              "unit_cost": 30000,
+              "total_cost": 30000
+            },
+            {
+              "name": "illustrative installation allowance",
+              "quantity": 1,
+              "quantity_unit": "allowance",
+              "unit_cost": 20000,
+              "total_cost": 20000
+            }
+          ],
+          "metrics": {
+            "initial_capital_cost": {
+              "value": 50000,
+              "unit": "USD",
+              "scope": "listed capital items only"
+            },
+            "annual_delivered_energy": {
+              "value": 247269.01840000003,
+              "unit": "kWh/year",
+              "scope": "constant modeled net power times assumed operating hours"
+            },
+            "discounted_lifecycle_cost": {
+              "value": 70577.76292817497,
+              "unit": "USD",
+              "scope": "listed costs; initial capital at year zero; other costs at year end"
+            },
+            "lcoe": {
+              "value": 0.02290356605179949,
+              "unit": "USD/kWh",
+              "scope": "discounted listed costs / discounted net delivered electricity"
+            }
+          },
+          "warnings": [
+            "Illustrative user-entered prices; no market-price or supply-chain evidence.",
+            "Constant net output during assumed operating hours; availability is not predicted.",
+            "Constant real costs; no escalation, degradation, financing schedule, taxes, subsidies, or replacement schedule.",
+            "Omitted costs are not proven zero. Include fuel and heat-source costs in annual_opex when relevant.",
+            "Not suitable for a cross-technology ranking without matching scope and completeness."
+          ]
+        },
+        "unsupported_outputs": [
+          "deployment_feasibility",
+          "supply_chain",
+          "propulsion",
+          "transient_dynamics"
+        ]
+      }
+    }
+  ]
+}

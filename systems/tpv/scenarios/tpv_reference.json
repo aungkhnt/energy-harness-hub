@@ -1,0 +1,27 @@
+{
+  "schema_version": "0.1.0",
+  "study_id": "tpv-fixed-temperature-reference",
+  "technology": "tpv",
+  "assumptions": [
+    "All device parameters are illustrative assumptions, not measured properties of a named material.",
+    "An external source holds the emitter at 2000 K and cooling holds the cell at 300 K; their energy costs are not modeled."
+  ],
+  "parameters": {
+    "emitter_temperature_k": 2000,
+    "cell_temperature_k": 300,
+    "emissivity": 0.9,
+    "emitter_width_m": 0.05,
+    "emitter_height_m": 0.05,
+    "cell_width_m": 0.02,
+    "cell_height_m": 0.02,
+    "gap_m": 0.1,
+    "emitter_offset_x_m": 0,
+    "emitter_offset_y_m": 0,
+    "bandgap_ev": 0.7,
+    "external_quantum_efficiency": 0.8,
+    "dark_saturation_current_density_a_m2": 0.01,
+    "conditioning_efficiency": 0.95,
+    "auxiliary_power_w": 0.1
+  },
+  "solver": {"geometry_cells": 8, "spectral_intervals": 512}
+}

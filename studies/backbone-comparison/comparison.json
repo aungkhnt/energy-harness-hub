@@ -1,0 +1,39 @@
+{
+  "schema_version": "0.1.0",
+  "comparison_kind": "within_model_operating_points",
+  "columns": [
+    {
+      "metric": "net_electric_power",
+      "unit": "W",
+      "scope": "prescribed hydraulic inlet to net electrical bus"
+    },
+    {
+      "metric": "hydraulic_power",
+      "unit": "W",
+      "scope": "prescribed hydraulic inlet to net electrical bus"
+    }
+  ],
+  "rows": [
+    {
+      "study_id": "hydropower-prescribed-resource-reference",
+      "input_sha256": "e4d7ac23221b1d0c6388e3e55a28242f06e1a5db2a5c62b81faa3f65d2093ce5",
+      "values": {
+        "net_electric_power": 15304.313650000002,
+        "hydraulic_power": 19613.3
+      }
+    },
+    {
+      "study_id": "hydropower-high-head-reference",
+      "input_sha256": "5eafbd137a37c4087a84f8fddfbd8ffb788200c89886d6c32b730c9d80f75b7b",
+      "values": {
+        "net_electric_power": 30808.627300000004,
+        "hydraulic_power": 39226.6
+      }
+    }
+  ],
+  "warnings": [
+    "Descriptive parameter comparison only; equal energy, reliability, and system service are not established.",
+    "No winner or weighted ranking is inferred. Null values remain undefined.",
+    "Consult each source result for its complete input assumptions and model limitations."
+  ]
+}
