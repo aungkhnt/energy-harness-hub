@@ -1,6 +1,8 @@
 __pycache__/
 *.pyc
+.DS_Store
+.venv/
+studies/local-*/
 .vscode/
 *.code-workspace
-plots/
-.DS_Store
+systems/tpv/legacy/plots/

@@ -1,0 +1,18 @@
+{
+  "schema_version": "0.1.0",
+  "study_id": "dc-distribution-reference",
+  "domain": "electrical_dc",
+  "nodes": ["ground", "source_bus", "load_bus"],
+  "reference_node": "ground",
+  "assumptions": [
+    "An ideal 48 V source supplies a distribution line and two resistive loads.",
+    "All values are illustrative electrical assumptions; no generation-device calibration is implied.",
+    "The source delivery cap is an assumed 500 W rating, not a measured capability."
+  ],
+  "modules": [
+    {"id": "supply", "type": "voltage_source", "positive": "source_bus", "negative": "ground", "parameters": {"voltage_v": 48, "max_delivery_power_w": 500}},
+    {"id": "line", "type": "resistor", "positive": "source_bus", "negative": "load_bus", "parameters": {"resistance_ohm": 0.5}},
+    {"id": "load_one", "type": "resistor", "positive": "load_bus", "negative": "ground", "parameters": {"resistance_ohm": 12}},
+    {"id": "load_two", "type": "resistor", "positive": "load_bus", "negative": "ground", "parameters": {"resistance_ohm": {"value": 0.024, "unit": "kohm"}}}
+  ]
+}

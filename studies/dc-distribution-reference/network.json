@@ -1,0 +1,227 @@
+{
+  "schema_version": "0.1.0",
+  "engine_version": "0.3.0",
+  "status": "completed_network_reference",
+  "study_id": "dc-distribution-reference",
+  "domain": "electrical_dc",
+  "execution_mode": "linear_steady_state",
+  "input_snapshot": {
+    "schema_version": "0.1.0",
+    "study_id": "dc-distribution-reference",
+    "domain": "electrical_dc",
+    "nodes": [
+      "ground",
+      "source_bus",
+      "load_bus"
+    ],
+    "reference_node": "ground",
+    "assumptions": [
+      "An ideal 48 V source supplies a distribution line and two resistive loads.",
+      "All values are illustrative electrical assumptions; no generation-device calibration is implied.",
+      "The source delivery cap is an assumed 500 W rating, not a measured capability."
+    ],
+    "modules": [
+      {
+        "id": "supply",
+        "type": "voltage_source",
+        "positive": "source_bus",
+        "negative": "ground",
+        "parameters": {
+          "voltage_v": 48,
+          "max_delivery_power_w": 500
+        }
+      },
+      {
+        "id": "line",
+        "type": "resistor",
+        "positive": "source_bus",
+        "negative": "load_bus",
+        "parameters": {
+          "resistance_ohm": 0.5
+        }
+      },
+      {
+        "id": "load_one",
+        "type": "resistor",
+        "positive": "load_bus",
+        "negative": "ground",
+        "parameters": {
+          "resistance_ohm": 12
+        }
+      },
+      {
+        "id": "load_two",
+        "type": "resistor",
+        "positive": "load_bus",
+        "negative": "ground",
+        "parameters": {
+          "resistance_ohm": {
+            "value": 0.024,
+            "unit": "kohm"
+          }
+        }
+      }
+    ]
+  },
+  "normalized_modules": [
+    {
+      "id": "supply",
+      "type": "voltage_source",
+      "positive": "source_bus",
+      "negative": "ground",
+      "parameters": {
+        "voltage_v": 48,
+        "max_delivery_power_w": 500
+      }
+    },
+    {
+      "id": "line",
+      "type": "resistor",
+      "positive": "source_bus",
+      "negative": "load_bus",
+      "parameters": {
+        "resistance_ohm": 0.5
+      }
+    },
+    {
+      "id": "load_one",
+      "type": "resistor",
+      "positive": "load_bus",
+      "negative": "ground",
+      "parameters": {
+        "resistance_ohm": 12
+      }
+    },
+    {
+      "id": "load_two",
+      "type": "resistor",
+      "positive": "load_bus",
+      "negative": "ground",
+      "parameters": {
+        "resistance_ohm": 24.0
+      }
+    }
+  ],
+  "input_sha256": "c8a7662acc00a6318aefb293862afc68dbf2f9bf90b25eed056dfa277ecaca89",
+  "implementation_sha256": "3919b41548e0681f7f9013d76a83b5855dab6dddb9368ab5948276f031082024",
+  "node_voltages_v": {
+    "ground": 0.0,
+    "source_bus": 48.0,
+    "load_bus": 45.17647058823529
+  },
+  "branches": [
+    {
+      "id": "supply",
+      "type": "voltage_source",
+      "positive": "source_bus",
+      "negative": "ground",
+      "voltage_drop_v": 48.0,
+      "current_a": -5.647058823529413,
+      "absorbed_power_w": -271.0588235294118
+    },
+    {
+      "id": "line",
+      "type": "resistor",
+      "positive": "source_bus",
+      "negative": "load_bus",
+      "voltage_drop_v": 2.82352941176471,
+      "current_a": 5.64705882352942,
+      "absorbed_power_w": 15.94463667820074
+    },
+    {
+      "id": "load_one",
+      "type": "resistor",
+      "positive": "load_bus",
+      "negative": "ground",
+      "voltage_drop_v": 45.17647058823529,
+      "current_a": 3.7647058823529407,
+      "absorbed_power_w": 170.076124567474
+    },
+    {
+      "id": "load_two",
+      "type": "resistor",
+      "positive": "load_bus",
+      "negative": "ground",
+      "voltage_drop_v": 45.17647058823529,
+      "current_a": 1.8823529411764703,
+      "absorbed_power_w": 85.038062283737
+    }
+  ],
+  "equation_system": {
+    "variables": [
+      {
+        "id": "voltage:source_bus",
+        "unit": "V"
+      },
+      {
+        "id": "voltage:load_bus",
+        "unit": "V"
+      },
+      {
+        "id": "current:supply",
+        "unit": "A"
+      }
+    ],
+    "equations": [
+      {
+        "id": "kcl:source_bus",
+        "residual_unit": "A"
+      },
+      {
+        "id": "kcl:load_bus",
+        "residual_unit": "A"
+      },
+      {
+        "id": "voltage_law:supply",
+        "residual_unit": "V"
+      }
+    ],
+    "matrix": [
+      [
+        2.0,
+        -2.0,
+        1.0
+      ],
+      [
+        -2.0,
+        2.125,
+        0.0
+      ],
+      [
+        1.0,
+        0.0,
+        0.0
+      ]
+    ],
+    "rhs": [
+      0.0,
+      0.0,
+      48
+    ]
+  },
+  "diagnostics": {
+    "linear_relative_residual": 7.401486830834377e-17,
+    "minimum_scaled_pivot": 0.5,
+    "node_kcl_residuals_a": {
+      "ground": 1.9984014443252818e-15,
+      "source_bus": 7.105427357601002e-15,
+      "load_bus": -9.103828801926284e-15
+    },
+    "power_balance_residual_w": -6.927791673660977e-14,
+    "relative_power_balance_residual": 1.277912960636248e-16,
+    "unknown_count": 3,
+    "equation_count": 3
+  },
+  "solver": {
+    "method": "row_scaled_partial_pivot_gaussian_elimination",
+    "pivot_tolerance": 1e-12,
+    "residual_tolerance": 1e-10
+  },
+  "warnings": [
+    "Ideal steady DC network; no dynamics, AC, semiconductor device law, or thermal coupling.",
+    "Positive branch current flows from positive to negative terminal; positive power is absorbed, negative power is delivered.",
+    "Sources are prescribed electrical assumptions, not automatically connected to TPV or hydropower results.",
+    "Optional source delivery limits reject infeasible results; no voltage droop, saturation or control law is modeled.",
+    "A small residual is not a condition-number estimate or empirical validation."
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "schema_version": "0.1.0",
+  "study_id": "hydropower-sensitivity",
+  "base_study": {
+    "schema_version": "0.1.0",
+    "study_id": "hydropower-prescribed-resource-reference",
+    "technology": "hydropower",
+    "assumptions": [
+      "A hypothetical hydraulic operating point with prescribed net head and flow, not a site resource forecast.",
+      "The economic inputs are invented demonstration values, not supplier quotes or market estimates.",
+      "Annual operation is assumed at this fixed operating point for 4000 hours; no seasonal analysis is performed."
+    ],
+    "parameters": {
+      "head_m": 10,
+      "flow_m3_s": 0.2,
+      "water_density_kg_m3": 1000,
+      "turbine_efficiency": 0.85,
+      "generator_efficiency": 0.93,
+      "auxiliary_power_w": 200
+    },
+    "economics": {
+      "currency": "USD",
+      "price_year": 2026,
+      "region": "hypothetical, no geographic price calibration",
+      "assumption_status": "illustrative_not_market_data",
+      "lifetime_years": 20,
+      "real_discount_rate": 0.05,
+      "operating_hours_per_year": 4000,
+      "capital_items": [
+        {
+          "name": "illustrative turbine-generator package",
+          "quantity": 1,
+          "quantity_unit": "package",
+          "unit_cost": 30000
+        },
+        {
+          "name": "illustrative installation allowance",
+          "quantity": 1,
+          "quantity_unit": "allowance",
+          "unit_cost": 20000
+        }
+      ],
+      "annual_opex": 1500,
+      "decommissioning_cost": 5000
+    }
+  },
+  "axes": {
+    "head_m": [
+      5,
+      10,
+      20
+    ],
+    "flow_m3_s": [
+      0.1,
+      0.2,
+      0.4
+    ]
+  }
+}

@@ -1,0 +1,274 @@
+{
+  "schema_version": "0.1.0",
+  "engine_version": "0.4.0",
+  "status": "completed_network_reference",
+  "study_id": "tpv-connected-load",
+  "domain": "electrical_dc",
+  "execution_mode": "nonlinear_steady_state",
+  "input_snapshot": {
+    "schema_version": "0.1.0",
+    "study_id": "tpv-connected-load",
+    "domain": "electrical_dc",
+    "nodes": [
+      "ground",
+      "cell_bus",
+      "load_bus"
+    ],
+    "reference_node": "ground",
+    "assumptions": [
+      "Illustrative fixed-temperature TPV cell connected directly to a resistive load through a resistive lead.",
+      "No MPPT, conditioning, auxiliary demand or heat-balance solution is included. Device calibration is deferred."
+    ],
+    "modules": [
+      {
+        "id": "cell",
+        "type": "tpv_cell",
+        "positive": "cell_bus",
+        "negative": "ground",
+        "parameters": {
+          "tpv_parameters": {
+            "emitter_temperature_k": 2000,
+            "cell_temperature_k": 300,
+            "emissivity": 0.9,
+            "emitter_width_m": 0.05,
+            "emitter_height_m": 0.05,
+            "cell_width_m": 0.02,
+            "cell_height_m": 0.02,
+            "gap_m": 0.1,
+            "emitter_offset_x_m": 0,
+            "emitter_offset_y_m": 0,
+            "bandgap_ev": 0.7,
+            "external_quantum_efficiency": 0.8,
+            "dark_saturation_current_density_a_m2": 0.01,
+            "conditioning_efficiency": 1,
+            "auxiliary_power_w": 0
+          }
+        }
+      },
+      {
+        "id": "lead",
+        "type": "resistor",
+        "positive": "cell_bus",
+        "negative": "load_bus",
+        "parameters": {
+          "resistance_ohm": 0.005
+        }
+      },
+      {
+        "id": "load",
+        "type": "resistor",
+        "positive": "load_bus",
+        "negative": "ground",
+        "parameters": {
+          "resistance_ohm": 0.05
+        }
+      }
+    ]
+  },
+  "normalized_modules": [
+    {
+      "id": "cell",
+      "type": "tpv_cell",
+      "positive": "cell_bus",
+      "negative": "ground",
+      "parameters": {
+        "photocurrent_a": 7.831581332059638,
+        "saturation_current_a": 4.000000000000001e-06,
+        "thermal_voltage_v": 0.025851999786435535,
+        "open_circuit_voltage_v": 0.3745277745335019,
+        "maximum_dc_power_w": 2.2281643588610174,
+        "absorbed_radiation_power_w": 9.298533917761644,
+        "normalized_tpv_parameters": {
+          "emitter_temperature_k": 2000,
+          "cell_temperature_k": 300,
+          "emissivity": 0.9,
+          "emitter_width_m": 0.05,
+          "emitter_height_m": 0.05,
+          "cell_width_m": 0.02,
+          "cell_height_m": 0.02,
+          "gap_m": 0.1,
+          "emitter_offset_x_m": 0,
+          "emitter_offset_y_m": 0,
+          "bandgap_ev": 0.7,
+          "external_quantum_efficiency": 0.8,
+          "dark_saturation_current_density_a_m2": 0.01,
+          "conditioning_efficiency": 1,
+          "auxiliary_power_w": 0
+        },
+        "radiation_solver": {},
+        "radiation_diagnostics": {
+          "geometry_relative_refinement_difference": 0.0009497970886113656,
+          "geometry_cells_per_axis": 16,
+          "spectral_relative_blackbody_deficit": 1.9058506661728813e-08,
+          "emitter_to_cell_view_factor": 0.011627792720767902,
+          "energy_balance_residual_w": 0.0
+        },
+        "model_id": "tpv_reference_v1",
+        "model_warnings": [
+          "Illustrative graybody emitter and one ideal single-diode cell; not a calibrated material/device prediction.",
+          "Parallel facing rectangles, far-field diffuse vacuum radiation, fixed temperatures, no reabsorption or photon recycling.",
+          "Above-bandgap absorptivity is one, below-bandgap reflectivity is one; external quantum efficiency is constant above the gap.",
+          "Dark saturation current is a user assumption at the specified cell temperature; ideality is one, series resistance zero, shunt resistance infinite.",
+          "Non-electrical remainder includes unresolved heat and radiative emission; energy closure is bookkeeping, not independent thermal validation.",
+          "Efficiency excludes emitter heating and source losses. This is a converter operating point, not whole-plant efficiency.",
+          "Spatial irradiance is averaged for the cell I-V model; no temperature dynamics or electrical mismatch model."
+        ]
+      }
+    },
+    {
+      "id": "lead",
+      "type": "resistor",
+      "positive": "cell_bus",
+      "negative": "load_bus",
+      "parameters": {
+        "resistance_ohm": 0.005
+      }
+    },
+    {
+      "id": "load",
+      "type": "resistor",
+      "positive": "load_bus",
+      "negative": "ground",
+      "parameters": {
+        "resistance_ohm": 0.05
+      }
+    }
+  ],
+  "input_sha256": "3b113f3a84fe617e3200a5234c4b6925fca9261ede44382092601cc8e5026ab9",
+  "implementation_sha256": "7a9075b0d943da154a5afe7e0173a3dd39f21ce71110aeac45421c026f854028",
+  "node_voltages_v": {
+    "ground": 0.0,
+    "cell_bus": 0.3355108601812007,
+    "load_bus": 0.30500987289200066
+  },
+  "branches": [
+    {
+      "id": "cell",
+      "type": "tpv_cell",
+      "positive": "cell_bus",
+      "negative": "ground",
+      "voltage_drop_v": 0.3355108601812007,
+      "current_a": -6.100197457840006,
+      "absorbed_power_w": -2.0466824963550745
+    },
+    {
+      "id": "lead",
+      "type": "resistor",
+      "positive": "cell_bus",
+      "negative": "load_bus",
+      "voltage_drop_v": 0.030500987289200032,
+      "current_a": 6.100197457840006,
+      "absorbed_power_w": 0.18606204512318839
+    },
+    {
+      "id": "load",
+      "type": "resistor",
+      "positive": "load_bus",
+      "negative": "ground",
+      "voltage_drop_v": 0.30500987289200066,
+      "current_a": 6.100197457840013,
+      "absorbed_power_w": 1.8606204512318878
+    }
+  ],
+  "equation_system": {
+    "variables": [
+      {
+        "id": "voltage:cell_bus",
+        "unit": "V"
+      },
+      {
+        "id": "voltage:load_bus",
+        "unit": "V"
+      }
+    ],
+    "equations": [
+      {
+        "id": "kcl:cell_bus",
+        "residual_unit": "A"
+      },
+      {
+        "id": "kcl:load_bus",
+        "residual_unit": "A"
+      }
+    ],
+    "matrix": [
+      [
+        200.0,
+        -200.0
+      ],
+      [
+        -200.0,
+        220.0
+      ]
+    ],
+    "rhs": [
+      0.0,
+      0.0
+    ],
+    "nonlinear_terms": [
+      {
+        "module_id": "cell",
+        "positive": "cell_bus",
+        "negative": "ground",
+        "law": "Iabsorbed = I0 * expm1(V / Vthermal) - Iph",
+        "parameters": {
+          "photocurrent_a": 7.831581332059638,
+          "saturation_current_a": 4.000000000000001e-06,
+          "thermal_voltage_v": 0.025851999786435535
+        }
+      }
+    ],
+    "interpretation": "Residual = matrix @ state - rhs + nonlinear terminal currents stamped into KCL rows."
+  },
+  "diagnostics": {
+    "linear_relative_residual": null,
+    "minimum_scaled_pivot": null,
+    "node_kcl_residuals_a": {
+      "ground": -6.217248937900877e-15,
+      "cell_bus": 0.0,
+      "load_bus": 6.217248937900877e-15
+    },
+    "power_balance_residual_w": 1.6930901125533637e-15,
+    "relative_power_balance_residual": 4.1361816392346587e-16,
+    "power_balance_acceptance_threshold_w": 5.093364992710151e-09,
+    "unknown_count": 2,
+    "equation_count": 2,
+    "nonlinear_scaled_residual": 1.4210854715202004e-14,
+    "nonlinear_iterations": 7,
+    "line_search_backtracks": 2
+  },
+  "solver": {
+    "method": "damped_newton_analytic_jacobian",
+    "nonlinear_tolerance": 1e-10,
+    "max_iterations": 100,
+    "max_backtracks": 40,
+    "pivot_tolerance": 1e-12,
+    "current_residual_scale_a": 1.0,
+    "voltage_residual_scale_v": 1.0,
+    "initial_state": "all_zero"
+  },
+  "warnings": [
+    "Steady DC network with ideal sources, resistors and optional ideal-diode TPV cells; no dynamics, AC or thermal coupling.",
+    "Positive branch current flows from positive to negative terminal; positive power is absorbed, negative power is delivered.",
+    "Ideal sources remain prescribed assumptions. tpv_cell modules derive a terminal law from the existing fixed-temperature TPV reference model; hydropower has no terminal adapter yet.",
+    "Optional source delivery limits reject infeasible results; no voltage droop, saturation or control law is modeled.",
+    "A small residual is not a condition-number estimate or empirical validation.",
+    "Illustrative graybody emitter and one ideal single-diode cell; not a calibrated material/device prediction.",
+    "Parallel facing rectangles, far-field diffuse vacuum radiation, fixed temperatures, no reabsorption or photon recycling.",
+    "Above-bandgap absorptivity is one, below-bandgap reflectivity is one; external quantum efficiency is constant above the gap.",
+    "Dark saturation current is a user assumption at the specified cell temperature; ideality is one, series resistance zero, shunt resistance infinite.",
+    "Non-electrical remainder includes unresolved heat and radiative emission; energy closure is bookkeeping, not independent thermal validation.",
+    "Efficiency excludes emitter heating and source losses. This is a converter operating point, not whole-plant efficiency.",
+    "Spatial irradiance is averaged for the cell I-V model; no temperature dynamics or electrical mismatch model.",
+    "TPV output is raw cell DC at the load-selected operating point. No MPPT, power conditioner or auxiliary load is silently applied."
+  ],
+  "tpv_operating_points": [
+    {
+      "module_id": "cell",
+      "delivered_dc_power_w": 2.0466824963550745,
+      "maximum_dc_power_w": 2.2281643588610174,
+      "absorbed_radiation_power_w": 9.298533917761644,
+      "unresolved_nonelectrical_power_w": 7.251851421406569
+    }
+  ]
+}

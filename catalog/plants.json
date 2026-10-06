@@ -1,0 +1,726 @@
+{
+  "schema_version": "0.2.0",
+  "catalog_status": "partial_implementation",
+  "description": "Technology taxonomy with two limited runnable reference models. Availability is not commercial readiness or empirical validation. Archetypes are discovery labels, not implemented variants.",
+  "common_generation_endpoint": "net_electricity",
+  "technologies": [
+    {
+      "id": "tpv",
+      "name": "Thermophotovoltaic",
+      "category": "radiative_conversion",
+      "archetypes": [
+        "thermal_emitter_and_photovoltaic_cell"
+      ],
+      "implementation_status": "reference_model",
+      "legacy_path": "systems/tpv/legacy",
+      "implemented_scope": [
+        "graybody_spectrum",
+        "finite_parallel_rectangles",
+        "ideal_single_diode",
+        "electrical_accounting"
+      ],
+      "planned_chain": [
+        "thermal_source",
+        "emitter",
+        "radiative_transport",
+        "photovoltaic_cell",
+        "power_conditioning",
+        "electrical_bus"
+      ],
+      "engine_runnable": true,
+      "validation_status": "analytical_and_numerical_checks_only",
+      "deployment_evidence": null,
+      "cost_dataset": null,
+      "energy_role": "conversion_device",
+      "taxonomy_sources": [],
+      "taxonomy_evidence_status": "inherited_scaffold",
+      "model_id": "tpv_reference_v1",
+      "system_path": "systems/tpv"
+    },
+    {
+      "id": "solar_pv",
+      "name": "Solar photovoltaic",
+      "category": "solar",
+      "archetypes": [
+        "fixed_tilt_array",
+        "tracking_array"
+      ],
+      "implementation_status": "planned",
+      "planned_chain": [
+        "solar_resource",
+        "array",
+        "inverter",
+        "electrical_bus"
+      ],
+      "engine_runnable": false,
+      "validation_status": "not_implemented",
+      "deployment_evidence": null,
+      "cost_dataset": null,
+      "energy_role": "primary_resource",
+      "taxonomy_sources": [],
+      "taxonomy_evidence_status": "inherited_scaffold"
+    },
+    {
+      "id": "solar_thermal",
+      "name": "Solar thermal electricity",
+      "category": "solar",
+      "archetypes": [
+        "concentrating_solar_thermal"
+      ],
+      "implementation_status": "planned",
+      "planned_chain": [
+        "solar_resource",
+        "collector",
+        "thermal_cycle",
+        "generator",
+        "electrical_bus"
+      ],
+      "engine_runnable": false,
+      "validation_status": "not_implemented",
+      "deployment_evidence": null,
+      "cost_dataset": null,
+      "energy_role": "primary_resource",
+      "taxonomy_sources": [],
+      "taxonomy_evidence_status": "inherited_scaffold"
+    },
+    {
+      "id": "wind",
+      "name": "Wind electricity",
+      "category": "wind",
+      "archetypes": [
+        "onshore",
+        "offshore"
+      ],
+      "implementation_status": "planned",
+      "planned_chain": [
+        "wind_resource",
+        "rotor",
+        "drivetrain",
+        "generator",
+        "power_conditioning",
+        "electrical_bus"
+      ],
+      "engine_runnable": false,
+      "validation_status": "not_implemented",
+      "deployment_evidence": null,
+      "cost_dataset": null,
+      "energy_role": "primary_resource",
+      "taxonomy_sources": [],
+      "taxonomy_evidence_status": "inherited_scaffold"
+    },
+    {
+      "id": "nuclear_fission",
+      "name": "Nuclear fission",
+      "category": "nuclear",
+      "archetypes": [
+        "large_reactor_plant",
+        "small_modular_reactor_plant"
+      ],
+      "implementation_status": "planned",
+      "initial_scope": "Specified thermal source and balance of plant; no core or safety simulation.",
+      "planned_chain": [
+        "specified_reactor_heat",
+        "heat_transport",
+        "thermal_cycle",
+        "generator",
+        "electrical_bus"
+      ],
+      "engine_runnable": false,
+      "validation_status": "not_implemented",
+      "deployment_evidence": null,
+      "cost_dataset": null,
+      "energy_role": "primary_resource",
+      "taxonomy_sources": [],
+      "taxonomy_evidence_status": "inherited_scaffold"
+    },
+    {
+      "id": "nuclear_fusion",
+      "name": "Nuclear fusion",
+      "category": "nuclear",
+      "archetypes": [
+        "magnetic_confinement_scenario",
+        "inertial_confinement_scenario"
+      ],
+      "implementation_status": "planned",
+      "initial_scope": "Assumption-based plant scenarios with explicit recirculating power; no claim of demonstrated net-electric operation.",
+      "planned_chain": [
+        "assumed_fusion_source",
+        "heat_recovery",
+        "thermal_cycle",
+        "generator",
+        "electrical_bus"
+      ],
+      "engine_runnable": false,
+      "validation_status": "not_implemented",
+      "deployment_evidence": null,
+      "cost_dataset": null,
+      "energy_role": "primary_resource",
+      "taxonomy_sources": [],
+      "taxonomy_evidence_status": "inherited_scaffold"
+    },
+    {
+      "id": "hydropower",
+      "name": "Hydropower",
+      "category": "water",
+      "energy_role": "primary_resource",
+      "archetypes": [
+        "reservoir",
+        "run_of_river",
+        "micro_hydro"
+      ],
+      "implementation_status": "reference_model",
+      "planned_chain": [
+        "water_head_and_flow",
+        "turbine",
+        "generator",
+        "electrical_bus"
+      ],
+      "engine_runnable": true,
+      "validation_status": "analytical_and_numerical_checks_only",
+      "deployment_evidence": null,
+      "cost_dataset": null,
+      "taxonomy_sources": [
+        "https://www.eia.gov/energyexplained/electricity/how-electricity-is-generated.php"
+      ],
+      "taxonomy_evidence_status": "referenced_family",
+      "model_id": "hydropower_reference_v1",
+      "implemented_scope": [
+        "prescribed_head_and_flow",
+        "fixed_efficiencies",
+        "electrical_accounting"
+      ],
+      "system_path": "systems/hydropower"
+    },
+    {
+      "id": "geothermal",
+      "name": "Geothermal electricity",
+      "category": "geothermal",
+      "energy_role": "primary_resource",
+      "archetypes": [
+        "dry_steam",
+        "flash_steam",
+        "binary_cycle",
+        "enhanced_geothermal"
+      ],
+      "implementation_status": "planned",
+      "planned_chain": [
+        "geothermal_reservoir",
+        "heat_extraction",
+        "power_cycle",
+        "generator",
+        "electrical_bus"
+      ],
+      "engine_runnable": false,
+      "validation_status": "not_implemented",
+      "deployment_evidence": null,
+      "cost_dataset": null,
+      "taxonomy_sources": [
+        "https://www.eia.gov/energyexplained/electricity/how-electricity-is-generated.php"
+      ],
+      "taxonomy_evidence_status": "referenced_family"
+    },
+    {
+      "id": "tidal",
+      "name": "Tidal power",
+      "category": "marine",
+      "energy_role": "primary_resource",
+      "archetypes": [
+        "tidal_stream",
+        "tidal_range"
+      ],
+      "implementation_status": "planned",
+      "planned_chain": [
+        "tidal_resource",
+        "hydraulic_rotor",
+        "generator",
+        "electrical_bus"
+      ],
+      "engine_runnable": false,
+      "validation_status": "not_implemented",
+      "deployment_evidence": null,
+      "cost_dataset": null,
+      "taxonomy_sources": [
+        "https://www.energy.gov/cmei/water/marine-energy-basics"
+      ],
+      "taxonomy_evidence_status": "referenced_family"
+    },
+    {
+      "id": "wave",
+      "name": "Wave power",
+      "category": "marine",
+      "energy_role": "primary_resource",
+      "archetypes": [
+        "point_absorber",
+        "oscillating_water_column",
+        "attenuator"
+      ],
+      "implementation_status": "planned",
+      "planned_chain": [
+        "wave_resource",
+        "power_takeoff",
+        "generator",
+        "electrical_bus"
+      ],
+      "engine_runnable": false,
+      "validation_status": "not_implemented",
+      "deployment_evidence": null,
+      "cost_dataset": null,
+      "taxonomy_sources": [
+        "https://www.energy.gov/cmei/water/marine-energy-basics"
+      ],
+      "taxonomy_evidence_status": "referenced_family"
+    },
+    {
+      "id": "current_hydrokinetic",
+      "name": "River and ocean current power",
+      "category": "water",
+      "energy_role": "primary_resource",
+      "archetypes": [
+        "river_current",
+        "ocean_current"
+      ],
+      "implementation_status": "planned",
+      "planned_chain": [
+        "water_current",
+        "rotor",
+        "generator",
+        "electrical_bus"
+      ],
+      "engine_runnable": false,
+      "validation_status": "not_implemented",
+      "deployment_evidence": null,
+      "cost_dataset": null,
+      "taxonomy_sources": [
+        "https://www.energy.gov/cmei/water/marine-energy-basics"
+      ],
+      "taxonomy_evidence_status": "referenced_family"
+    },
+    {
+      "id": "ocean_thermal",
+      "name": "Ocean thermal energy conversion",
+      "category": "marine",
+      "energy_role": "primary_resource",
+      "archetypes": [
+        "closed_cycle",
+        "open_cycle"
+      ],
+      "implementation_status": "planned",
+      "planned_chain": [
+        "ocean_temperature_gradient",
+        "heat_exchangers",
+        "thermal_cycle",
+        "generator",
+        "electrical_bus"
+      ],
+      "engine_runnable": false,
+      "validation_status": "not_implemented",
+      "deployment_evidence": null,
+      "cost_dataset": null,
+      "taxonomy_sources": [
+        "https://www.energy.gov/cmei/water/marine-energy-basics"
+      ],
+      "taxonomy_evidence_status": "referenced_family"
+    },
+    {
+      "id": "salinity_gradient",
+      "name": "Salinity-gradient power",
+      "category": "marine",
+      "energy_role": "primary_resource",
+      "archetypes": [
+        "pressure_retarded_osmosis",
+        "reverse_electrodialysis"
+      ],
+      "implementation_status": "planned",
+      "planned_chain": [
+        "salinity_gradient",
+        "membrane_conversion",
+        "power_conditioning",
+        "electrical_bus"
+      ],
+      "engine_runnable": false,
+      "validation_status": "not_implemented",
+      "deployment_evidence": null,
+      "cost_dataset": null,
+      "taxonomy_sources": [],
+      "taxonomy_evidence_status": "needs_specific_reference"
+    },
+    {
+      "id": "natural_gas",
+      "name": "Natural-gas generation",
+      "category": "combustion",
+      "energy_role": "fuel_conversion",
+      "archetypes": [
+        "simple_cycle",
+        "combined_cycle",
+        "reciprocating_engine"
+      ],
+      "implementation_status": "planned",
+      "planned_chain": [
+        "fuel",
+        "combustor",
+        "prime_mover",
+        "generator",
+        "electrical_bus"
+      ],
+      "engine_runnable": false,
+      "validation_status": "not_implemented",
+      "deployment_evidence": null,
+      "cost_dataset": null,
+      "taxonomy_sources": [
+        "https://www.eia.gov/energyexplained/electricity/how-electricity-is-generated.php"
+      ],
+      "taxonomy_evidence_status": "referenced_family"
+    },
+    {
+      "id": "coal",
+      "name": "Coal-fired generation",
+      "category": "combustion",
+      "energy_role": "fuel_conversion",
+      "archetypes": [
+        "steam_plant",
+        "integrated_gasification_combined_cycle"
+      ],
+      "implementation_status": "planned",
+      "planned_chain": [
+        "fuel",
+        "heat_or_gasification",
+        "power_cycle",
+        "generator",
+        "electrical_bus"
+      ],
+      "engine_runnable": false,
+      "validation_status": "not_implemented",
+      "deployment_evidence": null,
+      "cost_dataset": null,
+      "taxonomy_sources": [
+        "https://www.eia.gov/energyexplained/electricity/how-electricity-is-generated.php"
+      ],
+      "taxonomy_evidence_status": "referenced_family"
+    },
+    {
+      "id": "liquid_fuel",
+      "name": "Liquid-fuel generation",
+      "category": "combustion",
+      "energy_role": "fuel_conversion",
+      "archetypes": [
+        "diesel_engine",
+        "fuel_oil_steam_plant"
+      ],
+      "implementation_status": "planned",
+      "planned_chain": [
+        "fuel",
+        "prime_mover",
+        "generator",
+        "electrical_bus"
+      ],
+      "engine_runnable": false,
+      "validation_status": "not_implemented",
+      "deployment_evidence": null,
+      "cost_dataset": null,
+      "taxonomy_sources": [
+        "https://www.eia.gov/energyexplained/electricity/how-electricity-is-generated.php"
+      ],
+      "taxonomy_evidence_status": "referenced_family"
+    },
+    {
+      "id": "biomass_biogas",
+      "name": "Biomass and biogas generation",
+      "category": "bioenergy",
+      "energy_role": "fuel_conversion",
+      "archetypes": [
+        "solid_biomass",
+        "anaerobic_digestion_biogas",
+        "landfill_gas",
+        "gasification"
+      ],
+      "implementation_status": "planned",
+      "planned_chain": [
+        "feedstock",
+        "fuel_preparation",
+        "prime_mover",
+        "generator",
+        "electrical_bus"
+      ],
+      "engine_runnable": false,
+      "validation_status": "not_implemented",
+      "deployment_evidence": null,
+      "cost_dataset": null,
+      "taxonomy_sources": [
+        "https://www.eia.gov/energyexplained/electricity/how-electricity-is-generated.php"
+      ],
+      "taxonomy_evidence_status": "referenced_family"
+    },
+    {
+      "id": "waste_to_energy",
+      "name": "Waste-to-energy",
+      "category": "waste_recovery",
+      "energy_role": "recovered_energy",
+      "archetypes": [
+        "municipal_waste_combustion",
+        "waste_gasification"
+      ],
+      "implementation_status": "planned",
+      "planned_chain": [
+        "waste_feedstock",
+        "thermal_conversion",
+        "power_cycle",
+        "generator",
+        "electrical_bus"
+      ],
+      "engine_runnable": false,
+      "validation_status": "not_implemented",
+      "deployment_evidence": null,
+      "cost_dataset": null,
+      "taxonomy_sources": [
+        "https://www.eia.gov/energyexplained/electricity/how-electricity-is-generated.php"
+      ],
+      "taxonomy_evidence_status": "referenced_family"
+    },
+    {
+      "id": "fuel_cell",
+      "name": "Fuel-cell electricity",
+      "category": "electrochemical",
+      "energy_role": "fuel_conversion",
+      "archetypes": [
+        "pem",
+        "solid_oxide",
+        "molten_carbonate"
+      ],
+      "implementation_status": "planned",
+      "planned_chain": [
+        "supplied_fuel_and_oxidant",
+        "fuel_cell_stack",
+        "power_conditioning",
+        "electrical_bus"
+      ],
+      "engine_runnable": false,
+      "validation_status": "not_implemented",
+      "deployment_evidence": null,
+      "cost_dataset": null,
+      "taxonomy_sources": [
+        "https://www.energy.gov/cmei/fuels/fuel-cell-basics"
+      ],
+      "taxonomy_evidence_status": "referenced_family"
+    },
+    {
+      "id": "waste_heat",
+      "name": "Waste-heat electricity recovery",
+      "category": "heat_recovery",
+      "energy_role": "recovered_energy",
+      "archetypes": [
+        "organic_rankine",
+        "steam_bottoming_cycle",
+        "supercritical_co2_cycle"
+      ],
+      "implementation_status": "planned",
+      "planned_chain": [
+        "available_waste_heat",
+        "power_cycle",
+        "generator",
+        "electrical_bus"
+      ],
+      "engine_runnable": false,
+      "validation_status": "not_implemented",
+      "deployment_evidence": null,
+      "cost_dataset": null,
+      "taxonomy_sources": [],
+      "taxonomy_evidence_status": "needs_specific_reference"
+    },
+    {
+      "id": "radioisotope",
+      "name": "Radioisotope power",
+      "category": "nuclear",
+      "energy_role": "primary_resource",
+      "archetypes": [
+        "radioisotope_thermoelectric",
+        "dynamic_radioisotope"
+      ],
+      "implementation_status": "planned",
+      "planned_chain": [
+        "radioactive_decay_heat",
+        "thermal_converter",
+        "electrical_bus"
+      ],
+      "engine_runnable": false,
+      "validation_status": "not_implemented",
+      "deployment_evidence": null,
+      "cost_dataset": null,
+      "taxonomy_sources": [
+        "https://science.nasa.gov/planetary-science/programs/radioisotope-power-systems/overview/"
+      ],
+      "taxonomy_evidence_status": "referenced_family"
+    },
+    {
+      "id": "thermoelectric",
+      "name": "Thermoelectric conversion",
+      "category": "direct_conversion",
+      "energy_role": "conversion_device",
+      "archetypes": [
+        "seebeck_generator"
+      ],
+      "implementation_status": "planned",
+      "planned_chain": [
+        "hot_and_cold_reservoirs",
+        "thermoelectric_device",
+        "power_conditioning",
+        "electrical_bus"
+      ],
+      "engine_runnable": false,
+      "validation_status": "not_implemented",
+      "deployment_evidence": null,
+      "cost_dataset": null,
+      "taxonomy_sources": [
+        "https://science.nasa.gov/planetary-science/programs/radioisotope-power-systems/overview/"
+      ],
+      "taxonomy_evidence_status": "referenced_family"
+    },
+    {
+      "id": "thermionic",
+      "name": "Thermionic conversion",
+      "category": "direct_conversion",
+      "energy_role": "conversion_device",
+      "archetypes": [
+        "thermionic_converter"
+      ],
+      "implementation_status": "planned",
+      "planned_chain": [
+        "heat_source",
+        "electron_emission_converter",
+        "power_conditioning",
+        "electrical_bus"
+      ],
+      "engine_runnable": false,
+      "validation_status": "not_implemented",
+      "deployment_evidence": null,
+      "cost_dataset": null,
+      "taxonomy_sources": [],
+      "taxonomy_evidence_status": "needs_specific_reference"
+    },
+    {
+      "id": "thermoradiative",
+      "name": "Thermoradiative conversion",
+      "category": "direct_conversion",
+      "energy_role": "conversion_device",
+      "archetypes": [
+        "thermal_radiation_to_cold_sink"
+      ],
+      "implementation_status": "planned",
+      "planned_chain": [
+        "hot_device_and_cold_radiative_sink",
+        "thermoradiative_cell",
+        "electrical_bus"
+      ],
+      "engine_runnable": false,
+      "validation_status": "not_implemented",
+      "deployment_evidence": null,
+      "cost_dataset": null,
+      "taxonomy_sources": [],
+      "taxonomy_evidence_status": "needs_specific_reference"
+    },
+    {
+      "id": "mechanical_harvesting",
+      "name": "Small-scale mechanical harvesting",
+      "category": "ambient_harvesting",
+      "energy_role": "conversion_device",
+      "archetypes": [
+        "piezoelectric",
+        "triboelectric",
+        "electromagnetic_vibration"
+      ],
+      "implementation_status": "planned",
+      "planned_chain": [
+        "mechanical_excitation",
+        "transducer",
+        "rectifier",
+        "electrical_bus"
+      ],
+      "engine_runnable": false,
+      "validation_status": "not_implemented",
+      "deployment_evidence": null,
+      "cost_dataset": null,
+      "taxonomy_sources": [],
+      "taxonomy_evidence_status": "needs_specific_reference"
+    },
+    {
+      "id": "rf_harvesting",
+      "name": "Radio-frequency energy harvesting",
+      "category": "ambient_harvesting",
+      "energy_role": "recovered_energy",
+      "archetypes": [
+        "ambient_rf",
+        "dedicated_power_beaming_receiver"
+      ],
+      "implementation_status": "planned",
+      "planned_chain": [
+        "incident_rf",
+        "rectenna",
+        "power_conditioning",
+        "electrical_bus"
+      ],
+      "engine_runnable": false,
+      "validation_status": "not_implemented",
+      "deployment_evidence": null,
+      "cost_dataset": null,
+      "taxonomy_sources": [],
+      "taxonomy_evidence_status": "needs_specific_reference"
+    }
+  ],
+  "shared_downstream_capabilities": [
+    {
+      "id": "electrical_accounting",
+      "status": "implemented_reference_models",
+      "required_for_complete_generation_model": true
+    },
+    {
+      "id": "storage_and_dispatch",
+      "status": "planned"
+    },
+    {
+      "id": "atmospheric_electric_propulsion",
+      "status": "planned"
+    },
+    {
+      "id": "space_electric_propulsion",
+      "status": "planned"
+    },
+    {
+      "id": "economics_and_supply",
+      "status": "illustrative_lifecycle_cost_only_supply_planned"
+    },
+    {
+      "id": "comparison_and_reporting",
+      "status": "json_markdown_sweeps_and_within_model_comparisons"
+    }
+  ],
+  "system_patterns": [
+    {
+      "id": "combined_heat_and_power",
+      "description": "Joint heat/electricity output; requires declared cost and emissions allocation."
+    },
+    {
+      "id": "hybrid_plant",
+      "description": "Multiple generation, storage, and load modules sharing a system."
+    },
+    {
+      "id": "space_based_solar",
+      "description": "Solar collection plus transmission and reception; account for all stages."
+    }
+  ],
+  "storage_families": [
+    "electrochemical_battery",
+    "pumped_hydro",
+    "compressed_air",
+    "liquid_air",
+    "flywheel",
+    "thermal_storage",
+    "hydrogen_or_synthetic_fuel",
+    "gravity_storage"
+  ],
+  "taxonomy_notes": [
+    "Storage returns previously supplied energy and is not a primary source.",
+    "Fuel-cell assessments must include a declared fuel-production scope; hydrogen is an energy carrier.",
+    "Heat engines and direct converters can be reused across source families.",
+    "No exhaustive taxonomy or current deployment readiness is claimed.",
+    "Archetypes are examples, not claims that every technology shares one conversion chain."
+  ]
+}

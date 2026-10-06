@@ -1,0 +1,545 @@
+{
+  "schema_version": "0.1.0",
+  "status": "completed_reference_model",
+  "study_id": "tpv-fixed-temperature-reference",
+  "technology": "tpv",
+  "model_id": "tpv_reference_v1",
+  "engine_version": "0.1.0",
+  "input_sha256": "1caec91d69a876097a578f09632527b79ddcaa32b02ceea19e0330867487fdf0",
+  "implementation_sha256": "3e05b7d91b4423e625951219d123bd4b6e4f0dca41cab7cd7febcafaf840398e",
+  "input_snapshot": {
+    "schema_version": "0.1.0",
+    "study_id": "tpv-fixed-temperature-reference",
+    "technology": "tpv",
+    "assumptions": [
+      "All device parameters are illustrative assumptions, not measured properties of a named material.",
+      "An external source holds the emitter at 2000 K and cooling holds the cell at 300 K; their energy costs are not modeled."
+    ],
+    "parameters": {
+      "emitter_temperature_k": 2000,
+      "cell_temperature_k": 300,
+      "emissivity": 0.9,
+      "emitter_width_m": 0.05,
+      "emitter_height_m": 0.05,
+      "cell_width_m": 0.02,
+      "cell_height_m": 0.02,
+      "gap_m": 0.1,
+      "emitter_offset_x_m": 0,
+      "emitter_offset_y_m": 0,
+      "bandgap_ev": 0.7,
+      "external_quantum_efficiency": 0.8,
+      "dark_saturation_current_density_a_m2": 0.01,
+      "conditioning_efficiency": 0.95,
+      "auxiliary_power_w": 0.1
+    },
+    "solver": {
+      "geometry_cells": 8,
+      "spectral_intervals": 512
+    }
+  },
+  "metrics": {
+    "incident_radiation_power": {
+      "value": 23.736217369974785,
+      "unit": "W",
+      "scope": "cell incident radiation to net electrical bus"
+    },
+    "absorbed_above_gap_power": {
+      "value": 9.298533917761644,
+      "unit": "W",
+      "scope": "cell incident radiation to net electrical bus"
+    },
+    "reflected_subgap_power": {
+      "value": 14.437683452213141,
+      "unit": "W",
+      "scope": "cell incident radiation to net electrical bus"
+    },
+    "cell_dc_power": {
+      "value": 2.2281643588610174,
+      "unit": "W",
+      "scope": "cell incident radiation to net electrical bus"
+    },
+    "gross_electric_power": {
+      "value": 2.1167561409179663,
+      "unit": "W",
+      "scope": "cell incident radiation to net electrical bus"
+    },
+    "auxiliary_power": {
+      "value": 0.1,
+      "unit": "W",
+      "scope": "cell incident radiation to net electrical bus"
+    },
+    "net_electric_power": {
+      "value": 2.016756140917966,
+      "unit": "W",
+      "scope": "cell incident radiation to net electrical bus"
+    },
+    "conditioning_losses": {
+      "value": 0.11140821794305111,
+      "unit": "W",
+      "scope": "cell incident radiation to net electrical bus"
+    },
+    "unresolved_nonelectrical_power": {
+      "value": 7.070369558900627,
+      "unit": "W",
+      "scope": "cell incident radiation to net electrical bus"
+    },
+    "voc_v": {
+      "value": 0.3745277745335019,
+      "unit": "V",
+      "scope": "single idealized cell"
+    },
+    "vmpp_v": {
+      "value": 0.30836230919682334,
+      "unit": "V",
+      "scope": "single idealized cell"
+    },
+    "isc_a": {
+      "value": 7.831581332059638,
+      "unit": "A",
+      "scope": "single idealized cell"
+    },
+    "impp_a": {
+      "value": 7.225799951571939,
+      "unit": "A",
+      "scope": "single idealized cell"
+    },
+    "radiation_to_net_efficiency": {
+      "value": 0.08496535524101954,
+      "unit": "1",
+      "scope": "net electricity / radiation incident on cell; excludes source heating"
+    }
+  },
+  "diagnostics": {
+    "geometry_relative_refinement_difference": 0.0009497970886113656,
+    "geometry_cells_per_axis": 16,
+    "spectral_relative_blackbody_deficit": 1.9058506661728813e-08,
+    "emitter_to_cell_view_factor": 0.011627792720767902,
+    "energy_balance_residual_w": 0.0
+  },
+  "series": {
+    "iv_curve": [
+      {
+        "voltage_v": 0.0,
+        "current_a": 7.831581332059638
+      },
+      {
+        "voltage_v": 0.003745277745335019,
+        "current_a": 7.831580708484836
+      },
+      {
+        "voltage_v": 0.007490555490670038,
+        "current_a": 7.83157998769865
+      },
+      {
+        "voltage_v": 0.011235833236005056,
+        "current_a": 7.8315791545464375
+      },
+      {
+        "voltage_v": 0.014981110981340076,
+        "current_a": 7.831578191511044
+      },
+      {
+        "voltage_v": 0.018726388726675095,
+        "current_a": 7.831577078344499
+      },
+      {
+        "voltage_v": 0.022471666472010113,
+        "current_a": 7.831575791642302
+      },
+      {
+        "voltage_v": 0.026216944217345134,
+        "current_a": 7.831574304351338
+      },
+      {
+        "voltage_v": 0.02996222196268015,
+        "current_a": 7.831572585201082
+      },
+      {
+        "voltage_v": 0.03370749970801517,
+        "current_a": 7.831570598046129
+      },
+      {
+        "voltage_v": 0.03745277745335019,
+        "current_a": 7.8315683011062385
+      },
+      {
+        "voltage_v": 0.04119805519868521,
+        "current_a": 7.8315656460878875
+      },
+      {
+        "voltage_v": 0.044943332944020226,
+        "current_a": 7.831562577168901
+      },
+      {
+        "voltage_v": 0.04868861068935525,
+        "current_a": 7.831559029824777
+      },
+      {
+        "voltage_v": 0.05243388843469027,
+        "current_a": 7.831554929472049
+      },
+      {
+        "voltage_v": 0.05617916618002528,
+        "current_a": 7.8315501899001605
+      },
+      {
+        "voltage_v": 0.0599244439253603,
+        "current_a": 7.831544711458871
+      },
+      {
+        "voltage_v": 0.06366972167069532,
+        "current_a": 7.831538378963096
+      },
+      {
+        "voltage_v": 0.06741499941603034,
+        "current_a": 7.83153105927112
+      },
+      {
+        "voltage_v": 0.07116027716136536,
+        "current_a": 7.831522598485273
+      },
+      {
+        "voltage_v": 0.07490555490670038,
+        "current_a": 7.831512818716212
+      },
+      {
+        "voltage_v": 0.07865083265203539,
+        "current_a": 7.83150151434276
+      },
+      {
+        "voltage_v": 0.08239611039737042,
+        "current_a": 7.831488447688697
+      },
+      {
+        "voltage_v": 0.08614138814270543,
+        "current_a": 7.831473344025578
+      },
+      {
+        "voltage_v": 0.08988666588804045,
+        "current_a": 7.831455885796521
+      },
+      {
+        "voltage_v": 0.09363194363337547,
+        "current_a": 7.831435705939531
+      },
+      {
+        "voltage_v": 0.0973772213787105,
+        "current_a": 7.831412380169955
+      },
+      {
+        "voltage_v": 0.1011224991240455,
+        "current_a": 7.831385418059841
+      },
+      {
+        "voltage_v": 0.10486777686938054,
+        "current_a": 7.831354252726604
+      },
+      {
+        "voltage_v": 0.10861305461471554,
+        "current_a": 7.831318228914237
+      },
+      {
+        "voltage_v": 0.11235833236005056,
+        "current_a": 7.83127658921645
+      },
+      {
+        "voltage_v": 0.11610361010538557,
+        "current_a": 7.831228458152081
+      },
+      {
+        "voltage_v": 0.1198488878507206,
+        "current_a": 7.831172823757972
+      },
+      {
+        "voltage_v": 0.12359416559605563,
+        "current_a": 7.831108516312283
+      },
+      {
+        "voltage_v": 0.12733944334139063,
+        "current_a": 7.831034183740907
+      },
+      {
+        "voltage_v": 0.13108472108672567,
+        "current_a": 7.830948263189902
+      },
+      {
+        "voltage_v": 0.13482999883206068,
+        "current_a": 7.83084894816624
+      },
+      {
+        "voltage_v": 0.1385752765773957,
+        "current_a": 7.830734150556011
+      },
+      {
+        "voltage_v": 0.14232055432273072,
+        "current_a": 7.8306014567214985
+      },
+      {
+        "voltage_v": 0.14606583206806575,
+        "current_a": 7.830448076754074
+      },
+      {
+        "voltage_v": 0.14981110981340076,
+        "current_a": 7.830270785815924
+      },
+      {
+        "voltage_v": 0.15355638755873577,
+        "current_a": 7.830065856337336
+      },
+      {
+        "voltage_v": 0.15730166530407078,
+        "current_a": 7.829828979643963
+      },
+      {
+        "voltage_v": 0.1610469430494058,
+        "current_a": 7.829555175366266
+      },
+      {
+        "voltage_v": 0.16479222079474085,
+        "current_a": 7.82923868672647
+      },
+      {
+        "voltage_v": 0.16853749854007585,
+        "current_a": 7.8288728595014065
+      },
+      {
+        "voltage_v": 0.17228277628541086,
+        "current_a": 7.828450002116435
+      },
+      {
+        "voltage_v": 0.17602805403074587,
+        "current_a": 7.827961223928881
+      },
+      {
+        "voltage_v": 0.1797733317760809,
+        "current_a": 7.82739624830088
+      },
+      {
+        "voltage_v": 0.18351860952141594,
+        "current_a": 7.826743196531461
+      },
+      {
+        "voltage_v": 0.18726388726675094,
+        "current_a": 7.8259883381050015
+      },
+      {
+        "voltage_v": 0.19100916501208598,
+        "current_a": 7.825115802004987
+      },
+      {
+        "voltage_v": 0.194754442757421,
+        "current_a": 7.824107243023405
+      },
+      {
+        "voltage_v": 0.198499720502756,
+        "current_a": 7.822941456049876
+      },
+      {
+        "voltage_v": 0.202244998248091,
+        "current_a": 7.821593930230892
+      },
+      {
+        "voltage_v": 0.20599027599342606,
+        "current_a": 7.820036333625287
+      },
+      {
+        "voltage_v": 0.20973555373876107,
+        "current_a": 7.818235917520741
+      },
+      {
+        "voltage_v": 0.21348083148409608,
+        "current_a": 7.816154827886974
+      },
+      {
+        "voltage_v": 0.21722610922943109,
+        "current_a": 7.813749309488849
+      },
+      {
+        "voltage_v": 0.22097138697476612,
+        "current_a": 7.810968785925698
+      },
+      {
+        "voltage_v": 0.22471666472010113,
+        "current_a": 7.807754796254586
+      },
+      {
+        "voltage_v": 0.22846194246543614,
+        "current_a": 7.804039765839844
+      },
+      {
+        "voltage_v": 0.23220722021077114,
+        "current_a": 7.799745585585782
+      },
+      {
+        "voltage_v": 0.2359524979561062,
+        "current_a": 7.794781969680724
+      },
+      {
+        "voltage_v": 0.2396977757014412,
+        "current_a": 7.789044557323701
+      },
+      {
+        "voltage_v": 0.24344305344677622,
+        "current_a": 7.782412718522278
+      },
+      {
+        "voltage_v": 0.24718833119211125,
+        "current_a": 7.774747017828092
+      },
+      {
+        "voltage_v": 0.25093360893744626,
+        "current_a": 7.765886282684739
+      },
+      {
+        "voltage_v": 0.25467888668278127,
+        "current_a": 7.755644214749549
+      },
+      {
+        "voltage_v": 0.2584241644281163,
+        "current_a": 7.743805472941799
+      },
+      {
+        "voltage_v": 0.26216944217345134,
+        "current_a": 7.730121145862786
+      },
+      {
+        "voltage_v": 0.26591471991878635,
+        "current_a": 7.7143035183947415
+      },
+      {
+        "voltage_v": 0.26965999766412135,
+        "current_a": 7.6960200224454525
+      },
+      {
+        "voltage_v": 0.27340527540945636,
+        "current_a": 7.674886244652103
+      },
+      {
+        "voltage_v": 0.2771505531547914,
+        "current_a": 7.6504578440301705
+      },
+      {
+        "voltage_v": 0.28089583090012643,
+        "current_a": 7.622221209634715
+      },
+      {
+        "voltage_v": 0.28464110864546144,
+        "current_a": 7.589582661809902
+      },
+      {
+        "voltage_v": 0.28838638639079645,
+        "current_a": 7.55185596998136
+      },
+      {
+        "voltage_v": 0.2921316641361315,
+        "current_a": 7.508247924550987
+      },
+      {
+        "voltage_v": 0.2958769418814665,
+        "current_a": 7.4578416595410575
+      },
+      {
+        "voltage_v": 0.2996222196268015,
+        "current_a": 7.399577375343592
+      },
+      {
+        "voltage_v": 0.30336749737213653,
+        "current_a": 7.332230056267792
+      },
+      {
+        "voltage_v": 0.30711277511747154,
+        "current_a": 7.254383714393487
+      },
+      {
+        "voltage_v": 0.31085805286280654,
+        "current_a": 7.164401618203576
+      },
+      {
+        "voltage_v": 0.31460333060814155,
+        "current_a": 7.060391880047815
+      },
+      {
+        "voltage_v": 0.3183486083534766,
+        "current_a": 6.940167678908978
+      },
+      {
+        "voltage_v": 0.3220938860988116,
+        "current_a": 6.801201282148839
+      },
+      {
+        "voltage_v": 0.32583916384414663,
+        "current_a": 6.640570899533991
+      },
+      {
+        "voltage_v": 0.3295844415894817,
+        "current_a": 6.454899252139056
+      },
+      {
+        "voltage_v": 0.33332971933481664,
+        "current_a": 6.2402825645289175
+      },
+      {
+        "voltage_v": 0.3370749970801517,
+        "current_a": 5.992208487269413
+      },
+      {
+        "voltage_v": 0.34082027482548677,
+        "current_a": 5.705461224074561
+      },
+      {
+        "voltage_v": 0.3445655525708217,
+        "current_a": 5.374011868873598
+      },
+      {
+        "voltage_v": 0.3483108303161568,
+        "current_a": 4.990891647117589
+      },
+      {
+        "voltage_v": 0.35205610806149173,
+        "current_a": 4.54804539620433
+      },
+      {
+        "voltage_v": 0.3558013858068268,
+        "current_a": 4.036162204424296
+      },
+      {
+        "voltage_v": 0.3595466635521618,
+        "current_a": 3.4444796475853323
+      },
+      {
+        "voltage_v": 0.3632919412974968,
+        "current_a": 2.7605575073601445
+      },
+      {
+        "voltage_v": 0.3670372190428319,
+        "current_a": 1.9700162137497212
+      },
+      {
+        "voltage_v": 0.3707824967881669,
+        "current_a": 1.0562345123743855
+      },
+      {
+        "voltage_v": 0.3745277745335019,
+        "current_a": 0.0
+      }
+    ]
+  },
+  "warnings": [
+    "Illustrative graybody emitter and one ideal single-diode cell; not a calibrated material/device prediction.",
+    "Parallel facing rectangles, far-field diffuse vacuum radiation, fixed temperatures, no reabsorption or photon recycling.",
+    "Above-bandgap absorptivity is one, below-bandgap reflectivity is one; external quantum efficiency is constant above the gap.",
+    "Dark saturation current is a user assumption at the specified cell temperature; ideality is one, series resistance zero, shunt resistance infinite.",
+    "Non-electrical remainder includes unresolved heat and radiative emission; energy closure is bookkeeping, not independent thermal validation.",
+    "Efficiency excludes emitter heating and source losses. This is a converter operating point, not whole-plant efficiency.",
+    "Spatial irradiance is averaged for the cell I-V model; no temperature dynamics or electrical mismatch model."
+  ],
+  "validation_status": "computational_reference_checks_only_not_empirically_validated",
+  "evidence_manifest": "evidence/references.md",
+  "economics": null,
+  "unsupported_outputs": [
+    "deployment_feasibility",
+    "supply_chain",
+    "propulsion",
+    "transient_dynamics"
+  ]
+}
