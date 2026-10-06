@@ -5,6 +5,7 @@ import sys
 from pathlib import Path
 from .runner import catalog, run, markdown
 from .registry import get_model
+from .transient import run_transient, transient_markdown
 from .network import run_network, network_markdown
 from .studies import run_sweep, sweep_markdown, compare, comparison_markdown
 
@@ -29,6 +30,9 @@ def main():
     network = commands.add_parser('network', help='Assemble and solve a steady DC network')
     network.add_argument('scenario', type=Path)
     network.add_argument('--output', type=Path, required=True)
+    transient = commands.add_parser('transient', help='Integrate a capacitor network in time')
+    transient.add_argument('scenario', type=Path)
+    transient.add_argument('--output', type=Path, required=True)
     args = parser.parse_args()
     try:
         if args.command == 'catalog':
@@ -40,10 +44,14 @@ def main():
                     print(f'{t["id"]:24} {"reference" if t["engine_runnable"] else "planned":10} {t["name"]}')
         elif args.command == 'describe':
             print(json.dumps(get_model(args.technology).describe(), indent=2))
-        elif args.command in ('sweep', 'compare', 'network'):
+        elif args.command in ('sweep', 'compare', 'network', 'transient'):
             if args.output.exists():
                 raise ValueError('Output directory already exists; choose a new directory')
-            if args.command == 'network':
+            if args.command == 'transient':
+                result = run_transient(json.loads(args.scenario.read_text()))
+                report = transient_markdown(result)
+                filename = 'transient.json'
+            elif args.command == 'network':
                 result = run_network(json.loads(args.scenario.read_text()))
                 report = network_markdown(result)
                 filename = 'network.json'

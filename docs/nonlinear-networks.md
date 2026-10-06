@@ -1,5 +1,10 @@
 # Nonlinear DC networks and TPV terminal integration — v0.4
 
+Update: [v0.5 capacitor transients](transient-networks.md) now supports a restricted
+RC/TPV time-integration mode. Earlier roadmap statements below describe the prior
+version; general dynamics and thermal coupling remain deferred.
+
+
 The network engine now supports a nonlinear `tpv_cell` module. Its photocurrent is
 computed by the existing radiation model once before electrical solving; its
 terminal equation then participates in network KCL. The connected load determines

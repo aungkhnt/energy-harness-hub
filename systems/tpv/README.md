@@ -14,11 +14,15 @@ From the repository root:
 python3 -m engine run systems/tpv/scenarios/tpv_reference.json --output studies/local-tpv
 python3 -m engine sweep systems/tpv/scenarios/tpv_sweep.json --output studies/local-tpv-grid
 python3 -m engine network systems/tpv/scenarios/tpv_connected_load.json --output studies/local-tpv-network
+python3 -m engine transient systems/tpv/scenarios/tpv_capacitor_startup.json --output studies/local-tpv-startup
 ```
 
 Read the [model specification](../../docs/reference-models.md) and
 [network assumptions](../../docs/nonlinear-networks.md). Device calibration and
 coupled heat balance remain deferred; this is not a complete thermal plant model.
+
+The capacitor-startup scenario evolves electrical storage at fixed temperatures.
+See [transient limits and energy accounting](../../docs/transient-networks.md).
 
 ## Original prototype
 

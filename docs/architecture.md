@@ -5,6 +5,7 @@ Status: architecture scaffold started 2026-09-15; backbone update 2026-09-20.
 A first [DC network solver](networks.md) now assembles and solves electrical
 connection equations. It is separate from the standalone generation models;
 [Nonlinear TPV terminal integration](nonlinear-networks.md) is now implemented;
+[Capacitor transients](transient-networks.md) are also implemented; more general
 dynamics remain planned.
 
 Current priority: physics/math execution interfaces and study scaffolding. Device

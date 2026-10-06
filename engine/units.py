@@ -3,6 +3,8 @@ import math
 
 # dimension, scale to base, offset in base. Temperatures are absolute, not deltas.
 UNITS = {
+    's': ('time', 1.0, 0.0), 'ms': ('time', .001, 0.0),
+    'F': ('capacitance', 1.0, 0.0), 'mF': ('capacitance', .001, 0.0), 'uF': ('capacitance', 1e-6, 0.0),
     'V': ('voltage', 1.0, 0.0), 'mV': ('voltage', .001, 0.0),
     'A': ('current', 1.0, 0.0), 'mA': ('current', .001, 0.0),
     'ohm': ('resistance', 1.0, 0.0), 'kohm': ('resistance', 1000.0, 0.0),
