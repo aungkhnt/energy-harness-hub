@@ -52,6 +52,8 @@ python3 -m engine run systems/hydropower/scenarios/hydropower_reference.json --o
 python3 -m engine sweep systems/hydropower/scenarios/hydropower_sweep.json --output studies/local-hydro-grid
 python3 -m engine network systems/tpv/scenarios/tpv_connected_load.json --output studies/local-tpv-load
 python3 -m engine network scenarios/dc_distribution.json --output studies/local-dc-network
+python3 -m engine transient scenarios/rc_charging.json --output studies/local-rc
+python3 -m engine transient systems/tpv/scenarios/tpv_capacitor_startup.json --output studies/local-tpv-startup
 python3 -m unittest discover -s tests -v
 ```
 
@@ -62,6 +64,11 @@ see [TPV system instructions](systems/tpv/README.md).
 
 ## Available capabilities
 
+Transient extension v0.5 adds capacitor states, explicit initialization and fixed-step
+backward Euler integration for RC and TPV networks. Physical energy transfers and
+numerical damping are reported separately. See [transient networks](docs/transient-networks.md).
+
+
 - Model registry, explicit unit conversions, input snapshots and implementation hashes.
 - TPV radiation, idealized cell I–V and maximum power; prescribed-head hydropower.
 - Linear/nonlinear steady DC networks and TPV load-selected operating points.
@@ -69,7 +76,7 @@ see [TPV system instructions](systems/tpv/README.md).
 - Illustrative lifecycle economics and reproducible reports.
 
 These are reference calculations, not empirically validated engineering designs.
-Device calibration and coupled heat balance are deferred. Dynamic simulation,
+Device calibration and coupled heat balance are deferred. General dynamic simulation, switching events,
 propulsion, supply-chain forecasts, a website and most catalog technologies remain
 planned. Example economic inputs are invented and labeled accordingly.
 
@@ -80,6 +87,7 @@ planned. Example economic inputs are invented and labeled accordingly.
 - [Repository layout and migration](docs/repository-layout.md)
 - [Overall architecture](docs/architecture.md)
 - [Engine backbone](docs/backbone.md)
+- [Transient capacitor networks](docs/transient-networks.md)
 - [Linear networks](docs/networks.md) and [nonlinear TPV networks](docs/nonlinear-networks.md)
 - [Reference equations](docs/reference-models.md) and [evidence](evidence/references.md)
 - [Connected TPV report](studies/tpv-connected-load/report.md)

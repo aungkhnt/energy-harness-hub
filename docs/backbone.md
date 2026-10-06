@@ -1,5 +1,10 @@
 # Physics/math backbone — implementation 0.2, extended by 0.3
 
+Update: [v0.5 capacitor transients](transient-networks.md) now supports a restricted
+RC/TPV time-integration mode. Earlier roadmap statements below describe the prior
+version; general dynamics and thermal coupling remain deferred.
+
+
 Update 2026-09-20: [steady DC networks and linear equation assembly](networks.md)
 are now implemented as a separate network execution mode. The network/equation
 roadmap below is partially fulfilled for linear electrical systems only.

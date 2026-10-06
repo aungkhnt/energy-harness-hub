@@ -57,6 +57,6 @@ outputs for technologies that are still planned.
 
 ## Verification
 
-The restructuring preserves behavior: the 65 existing tests run from the repository
-root. GitHub Actions runs the suite on Python 3.10 and 3.13 without installing the
+The restructuring preserved behavior with 65 tests at migration time. The test
+suite continues to grow as capabilities are added. Run it from the repository root. GitHub Actions runs the suite on Python 3.10 and 3.13 without installing the
 legacy optional dependencies. The archived prototype is not claimed to be validated.

@@ -1,0 +1,18 @@
+{
+  "schema_version": "0.1.0",
+  "study_id": "rc-charging-reference",
+  "time": {"duration_s": 0.5, "step_s": 0.005},
+  "network": {
+    "schema_version": "0.1.0",
+    "study_id": "rc-charging-circuit",
+    "domain": "electrical_dc",
+    "nodes": ["ground", "supply", "storage"],
+    "reference_node": "ground",
+    "assumptions": ["Illustrative 10 V source, 10 ohm resistor and 10 mF capacitor initially at zero volts.", "Source and resistance remain constant; no switching impulse, temperature or device calibration is modeled."],
+    "modules": [
+      {"id": "source", "type": "voltage_source", "positive": "supply", "negative": "ground", "parameters": {"voltage_v": 10}},
+      {"id": "resistor", "type": "resistor", "positive": "supply", "negative": "storage", "parameters": {"resistance_ohm": 10}},
+      {"id": "storage", "type": "capacitor", "positive": "storage", "negative": "ground", "parameters": {"capacitance_f": {"value": 10, "unit": "mF"}, "initial_voltage_v": 0}}
+    ]
+  }
+}

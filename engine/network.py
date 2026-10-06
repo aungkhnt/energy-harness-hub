@@ -14,6 +14,7 @@ from .terminals import prepare_tpv_terminal, tpv_current
 from .runner import digest, implementation_digest
 
 MODULES = {
+    'capacitor': {'law':'I = C * d(Vpositive - Vnegative)/dt'},
     'tpv_cell': {'law':'Iabsorbed = I0 * expm1(V / Vthermal) - Iph'},
     'resistor': {'parameter':'resistance_ohm','unit':'ohm','law':'I = (Vp - Vn) / R'},
     'voltage_source': {'parameter':'voltage_v','unit':'V','law':'Vp - Vn = prescribed voltage'},
@@ -25,7 +26,7 @@ def _identifier(value):
     return isinstance(value,str) and bool(value) and len(value)<=80 and all(c.isalnum() or c in '_-' for c in value)
 
 
-def prepare_network(spec):
+def prepare_network(spec, *, allow_capacitors=False):
     exact_fields(spec,['schema_version','study_id','domain','nodes','reference_node','modules','assumptions'],['solver'])
     if spec['schema_version']!='0.1.0' or spec['domain']!='electrical_dc':
         raise ValueError('Network requires schema 0.1.0 and domain electrical_dc')
@@ -54,7 +55,14 @@ def prepare_network(spec):
         a,b=module['positive'],module['negative']
         if not isinstance(a,str) or not isinstance(b,str) or a not in nodes or b not in nodes or a==b:
             raise ValueError('Module terminals must reference two different existing nodes')
-        if kind=='tpv_cell':
+        if kind=='capacitor':
+            if not allow_capacitors:
+                raise ValueError('Capacitors require the transient command, not a steady network solve')
+            exact_fields(module['parameters'],['capacitance_f','initial_voltage_v'])
+            params={'capacitance_f':normalize(module['parameters']['capacitance_f'],'F'),
+                    'initial_voltage_v':normalize(module['parameters']['initial_voltage_v'],'V')}
+            positive('capacitance_f',params['capacitance_f'])
+        elif kind=='tpv_cell':
             params=prepare_tpv_terminal(module['parameters'])
         else:
             info=MODULES[kind]; key=info['parameter']
@@ -84,9 +92,9 @@ def prepare_network(spec):
     return snapshot,normalized,dict(options)
 
 
-def assemble(spec):
+def assemble(spec, *, allow_capacitors=False):
     """Return the inspectable linear equation system after topology validation."""
-    snapshot,modules,options=prepare_network(spec)
+    snapshot,modules,options=prepare_network(spec,allow_capacitors=allow_capacitors)
     reference=spec['reference_node']
     active=[node for node in spec['nodes'] if node!=reference]
     sources=[m for m in modules if m['type']=='voltage_source']
@@ -136,8 +144,9 @@ def evaluate_network(system, state):
     return residual,jacobian
 
 
-def run_network(spec):
-    system=assemble(spec)
+def solve_system(system, initial=None):
+    """Solve an assembled steady or discretized system; nonlinear steps may warm-start."""
+    current_scale=voltage_scale=1.0
     nonlinear=any(m['type']=='tpv_cell' for m in system['modules'])
     if nonlinear:
         options=system['solver']
@@ -148,24 +157,34 @@ def run_network(spec):
         positive('current_residual_scale_a',current_scale)
         positive('voltage_residual_scale_v',voltage_scale)
         scales=[current_scale if eq['residual_unit']=='A' else voltage_scale for eq in system['equations']]
-        solution=solve_nonlinear(lambda x:evaluate_network(system,x),[0.0]*len(scales),scales,
+        solution=solve_nonlinear(lambda x:evaluate_network(system,x),
+            [0.0]*len(scales) if initial is None else initial,scales,
             tolerance=options.get('nonlinear_tolerance',1e-10),
             max_iterations=options.get('max_iterations',100),
             pivot_tolerance=options.get('pivot_tolerance',1e-12))
     else:
         solution=solve_linear(system['matrix'],system['rhs'],**system['solver'])
-    voltage={spec['reference_node']:0.0}
-    voltage.update({node:solution.solution[i] for node,i in system['node_index'].items()})
+    return solution,nonlinear,current_scale,voltage_scale
+
+
+def summarize_state(system, state, capacitor_currents=None):
+    """Physical branch results and conservation checks shared by both execution modes."""
+    voltage={system['snapshot']['reference_node']:0.0}
+    voltage.update({node:state[i] for node,i in system['node_index'].items()})
     branches=[]; kcl={node:0.0 for node in voltage}
     for m in system['modules']:
         dv=voltage[m['positive']]-voltage[m['negative']]
         if m['type']=='resistor': current=dv/m['parameters']['resistance_ohm']
         elif m['type']=='current_source': current=m['parameters']['current_a']
+        elif m['type']=='capacitor':
+            if capacitor_currents is None or m['id'] not in capacitor_currents:
+                raise ValueError('Capacitor current required for transient state accounting')
+            current=capacitor_currents[m['id']]
         elif m['type']=='tpv_cell':
             if not -1e-9 <= dv <= m['parameters']['open_circuit_voltage_v']+1e-9:
                 raise ValueError(f'TPV cell {m["id"]} is outside the supported generating voltage range')
             current,_=tpv_current(dv,m['parameters'])
-        else: current=solution.solution[system['source_index'][m['id']]]
+        else: current=state[system['source_index'][m['id']]]
         power=dv*current
         if not all(math.isfinite(v) for v in (dv,current,power)):
             raise ConvergenceError('Non-finite branch result')
@@ -182,6 +201,13 @@ def run_network(spec):
     relative=abs(net)/scale if scale else 0.0
     if abs(net)>1e-9+1e-9*scale:
         raise ConvergenceError('Network power conservation exceeds tolerance')
+    return voltage,branches,kcl,net,scale,relative
+
+
+def run_network(spec):
+    system=assemble(spec)
+    solution,nonlinear,current_scale,voltage_scale=solve_system(system)
+    voltage,branches,kcl,net,scale,relative=summarize_state(system,solution.solution)
     result={'schema_version':'0.1.0','engine_version':__version__,
             'status':'completed_network_reference','study_id':spec['study_id'],
             'domain':'electrical_dc','execution_mode':'nonlinear_steady_state' if nonlinear else 'linear_steady_state',

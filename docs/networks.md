@@ -1,5 +1,10 @@
 # Network and equation backbone — v0.3
 
+Update: [v0.5 capacitor transients](transient-networks.md) now supports a restricted
+RC/TPV time-integration mode. Earlier roadmap statements below describe the prior
+version; general dynamics and thermal coupling remain deferred.
+
+
 Extension: [v0.4 nonlinear DC solving and TPV terminal integration](nonlinear-networks.md)
 adds a real generator-terminal adapter and damped Newton solving. The remainder of
 this document records the v0.3 linear-network contract.

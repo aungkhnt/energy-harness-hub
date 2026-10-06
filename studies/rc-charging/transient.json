@@ -1,0 +1,6247 @@
+{
+  "schema_version": "0.1.0",
+  "engine_version": "0.5.0",
+  "study_id": "rc-charging-reference",
+  "status": "completed_transient_reference",
+  "execution_mode": "backward_euler",
+  "input_snapshot": {
+    "schema_version": "0.1.0",
+    "study_id": "rc-charging-reference",
+    "time": {
+      "duration_s": 0.5,
+      "step_s": 0.005
+    },
+    "network": {
+      "schema_version": "0.1.0",
+      "study_id": "rc-charging-circuit",
+      "domain": "electrical_dc",
+      "nodes": [
+        "ground",
+        "supply",
+        "storage"
+      ],
+      "reference_node": "ground",
+      "assumptions": [
+        "Illustrative 10 V source, 10 ohm resistor and 10 mF capacitor initially at zero volts.",
+        "Source and resistance remain constant; no switching impulse, temperature or device calibration is modeled."
+      ],
+      "modules": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "parameters": {
+            "voltage_v": 10
+          }
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "parameters": {
+            "resistance_ohm": 10
+          }
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "parameters": {
+            "capacitance_f": {
+              "value": 10,
+              "unit": "mF"
+            },
+            "initial_voltage_v": 0
+          }
+        }
+      ]
+    }
+  },
+  "input_sha256": "ff41ff90920a17bbd9ee056560c096d60f8f0f313751654a56e47ef14481b398",
+  "implementation_sha256": "324a3f25884cd9e1645d7daf0eec1974b52f3f684acff8159cf7f112f6f8bbbf",
+  "normalized_modules": [
+    {
+      "id": "source",
+      "type": "voltage_source",
+      "positive": "supply",
+      "negative": "ground",
+      "parameters": {
+        "voltage_v": 10
+      }
+    },
+    {
+      "id": "resistor",
+      "type": "resistor",
+      "positive": "supply",
+      "negative": "storage",
+      "parameters": {
+        "resistance_ohm": 10
+      }
+    },
+    {
+      "id": "storage",
+      "type": "capacitor",
+      "positive": "storage",
+      "negative": "ground",
+      "parameters": {
+        "capacitance_f": 0.01,
+        "initial_voltage_v": 0
+      }
+    }
+  ],
+  "time_grid": {
+    "duration_s": 0.5,
+    "requested_step_s": 0.005,
+    "step_count": 100,
+    "sample_count": 101
+  },
+  "state_definition": [
+    {
+      "id": "storage",
+      "quantity": "terminal_voltage",
+      "unit": "V",
+      "positive": "storage",
+      "negative": "ground",
+      "initial_voltage_v": 0
+    }
+  ],
+  "equation_system": {
+    "variables": [
+      {
+        "id": "voltage:supply",
+        "unit": "V"
+      },
+      {
+        "id": "voltage:storage",
+        "unit": "V"
+      },
+      {
+        "id": "current:source",
+        "unit": "A"
+      }
+    ],
+    "equations": [
+      {
+        "id": "kcl:supply",
+        "residual_unit": "A"
+      },
+      {
+        "id": "kcl:storage",
+        "residual_unit": "A"
+      },
+      {
+        "id": "voltage_law:source",
+        "residual_unit": "V"
+      }
+    ],
+    "static_matrix": [
+      [
+        0.1,
+        -0.1,
+        1.0
+      ],
+      [
+        -0.1,
+        0.1,
+        0.0
+      ],
+      [
+        1.0,
+        0.0,
+        0.0
+      ]
+    ],
+    "static_rhs": [
+      0.0,
+      0.0,
+      10
+    ],
+    "interpretation": "Static KCL + TPV terminal currents + capacitor currents C*(Vnew - Vold)/dt = 0. Capacitor parameters and TPV laws are in normalized_modules."
+  },
+  "solver": {
+    "integration": "fixed_step_backward_euler",
+    "initialization": "explicit capacitor voltage constraints",
+    "warm_start": "previous solved electrical state",
+    "network_options": {},
+    "accuracy_estimate": "not_estimated; compare refined time steps"
+  },
+  "samples": [
+    {
+      "time_s": 0.0,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 0.0
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -1.0,
+          "absorbed_power_w": -10.0
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 10.0,
+          "current_a": 1.0,
+          "absorbed_power_w": 10.0
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 0.0,
+          "current_a": 1.0,
+          "absorbed_power_w": 0.0
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.0
+      },
+      "total_stored_energy_j": 0.0,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 0.0,
+          "supply": 0.0,
+          "storage": 0.0
+        },
+        "power_balance_residual_w": 0.0,
+        "power_balance_acceptance_threshold_w": 2.1e-08,
+        "solver": {
+          "relative_residual": 0.0,
+          "minimum_scaled_pivot": 1.0
+        }
+      }
+    },
+    {
+      "time_s": 0.005,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 0.47619047619047616
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.9523809523809523,
+          "absorbed_power_w": -9.523809523809524
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 9.523809523809524,
+          "current_a": 0.9523809523809523,
+          "absorbed_power_w": 9.070294784580499
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 0.47619047619047616,
+          "current_a": 0.9523809523809523,
+          "absorbed_power_w": 0.4535147392290249
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.0011337868480725624
+      },
+      "total_stored_energy_j": 0.0011337868480725624,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 0.0,
+          "supply": 0.0,
+          "storage": 0.0
+        },
+        "power_balance_residual_w": 5.551115123125783e-17,
+        "power_balance_acceptance_threshold_w": 2.0047619047619047e-08,
+        "solver": {
+          "relative_residual": 2.7755575615628914e-17,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.005,
+        "stored_energy_change_j": 0.0011337868480725624,
+        "numerical_damping_j": 0.0011337868480725624,
+        "discrete_energy_residual_j": -2.168404344971009e-18
+      }
+    },
+    {
+      "time_s": 0.01,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 0.9297052154195011
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.9070294784580499,
+          "absorbed_power_w": -9.070294784580499
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 9.070294784580499,
+          "current_a": 0.9070294784580499,
+          "absorbed_power_w": 8.22702474791882
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 0.9297052154195011,
+          "current_a": 0.9070294784580499,
+          "absorbed_power_w": 0.8432700366616791
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.004321758937891105
+      },
+      "total_stored_energy_j": 0.004321758937891105,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 0.0,
+          "supply": 0.0,
+          "storage": 0.0
+        },
+        "power_balance_residual_w": 5.551115123125783e-16,
+        "power_balance_acceptance_threshold_w": 1.9140589569160997e-08,
+        "solver": {
+          "relative_residual": 5.686508174909338e-17,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.005,
+        "stored_energy_change_j": 0.003187972089818543,
+        "numerical_damping_j": 0.0010283780934898525,
+        "discrete_energy_residual_j": -5.637851296924623e-18
+      }
+    },
+    {
+      "time_s": 0.015,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 1.361624014685239
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.8638375985314761,
+          "absorbed_power_w": -8.638375985314761
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 8.638375985314761,
+          "current_a": 0.8638375985314761,
+          "absorbed_power_w": 7.4621539663662775
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 1.361624014685239,
+          "current_a": 0.8638375985314758,
+          "absorbed_power_w": 1.1762220189484838
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.00927009978683774
+      },
+      "total_stored_energy_j": 0.00927009978683774,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 3.3306690738754696e-16,
+          "supply": 0.0,
+          "storage": -3.3306690738754696e-16
+        },
+        "power_balance_residual_w": 0.0,
+        "power_balance_acceptance_threshold_w": 1.8276751970629522e-08,
+        "solver": {
+          "relative_residual": 1.3877787807814457e-17,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.004999999999999999,
+        "stored_energy_change_j": 0.004948340848946634,
+        "numerical_damping_j": 0.0009327692457957838,
+        "discrete_energy_residual_j": -7.589415207398531e-19
+      }
+    },
+    {
+      "time_s": 0.02,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 1.7729752520811801
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.822702474791882,
+          "absorbed_power_w": -8.22702474791882
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 8.22702474791882,
+          "current_a": 0.8227024747918821,
+          "absorbed_power_w": 6.768393620286873
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 1.7729752520811801,
+          "current_a": 0.8227024747918822,
+          "absorbed_power_w": 1.4586311276319481
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.015717206222461623
+      },
+      "total_stored_energy_j": 0.015717206222461623,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": -2.220446049250313e-16,
+          "supply": 1.1102230246251565e-16,
+          "storage": 1.1102230246251565e-16
+        },
+        "power_balance_residual_w": 8.881784197001252e-16,
+        "power_balance_acceptance_threshold_w": 1.745404949583764e-08,
+        "solver": {
+          "relative_residual": 0.0,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.005000000000000001,
+        "stored_energy_change_j": 0.0064471064356238835,
+        "numerical_damping_j": 0.0008460492025358597,
+        "discrete_energy_residual_j": -7.26415455565288e-18
+      }
+    },
+    {
+      "time_s": 0.025,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 2.1647383353154095
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.7835261664684591,
+          "absorbed_power_w": -7.835261664684591
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 7.835261664684591,
+          "current_a": 0.7835261664684591,
+          "absorbed_power_w": 6.139132535407595
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 2.1647383353154095,
+          "current_a": 0.7835261664684586,
+          "absorbed_power_w": 1.6961291292769956
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.023430460301920652
+      },
+      "total_stored_energy_j": 0.023430460301920652,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 4.440892098500626e-16,
+          "supply": 0.0,
+          "storage": -4.440892098500626e-16
+        },
+        "power_balance_residual_w": -6.661338147750939e-16,
+        "power_balance_acceptance_threshold_w": 1.6670523329369183e-08,
+        "solver": {
+          "relative_residual": 1.3877787807814457e-17,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.005000000000000001,
+        "stored_energy_change_j": 0.007713254079459029,
+        "numerical_damping_j": 0.0007673915669259486,
+        "discrete_energy_residual_j": 4.662069341687669e-18
+      }
+    },
+    {
+      "time_s": 0.03,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 2.5378460336337234
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.7462153966366276,
+          "absorbed_power_w": -7.462153966366277
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 7.462153966366277,
+          "current_a": 0.7462153966366276,
+          "absorbed_power_w": 5.568374181775595
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 2.5378460336337234,
+          "current_a": 0.7462153966366283,
+          "absorbed_power_w": 1.8937797845906827
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.03220331245215211
+      },
+      "total_stored_energy_j": 0.03220331245215211,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": -6.661338147750939e-16,
+          "supply": 0.0,
+          "storage": 6.661338147750939e-16
+        },
+        "power_balance_residual_w": 1.1102230246251565e-15,
+        "power_balance_acceptance_threshold_w": 1.5924307932732554e-08,
+        "solver": {
+          "relative_residual": 8.332698260925085e-17,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0049999999999999975,
+        "stored_energy_change_j": 0.00877285215023146,
+        "numerical_damping_j": 0.0006960467727219498,
+        "discrete_energy_residual_j": -8.998878031629687e-18
+      }
+    },
+    {
+      "time_s": 0.035,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 2.8931866986987846
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.7106813301301216,
+          "absorbed_power_w": -7.106813301301216
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 7.106813301301216,
+          "current_a": 0.7106813301301216,
+          "absorbed_power_w": 5.050679529955189
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 2.8931866986987846,
+          "current_a": 0.7106813301301218,
+          "absorbed_power_w": 2.0561337713460284
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.04185264636763786
+      },
+      "total_stored_energy_j": 0.04185264636763786,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": -2.220446049250313e-16,
+          "supply": 0.0,
+          "storage": 2.220446049250313e-16
+        },
+        "power_balance_residual_w": 1.3322676295501878e-15,
+        "power_balance_acceptance_threshold_w": 1.5213626602602432e-08,
+        "solver": {
+          "relative_residual": 7.309277773351551e-17,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0050000000000000044,
+        "stored_energy_change_j": 0.009649333915485746,
+        "numerical_damping_j": 0.0006313349412444001,
+        "discrete_energy_residual_j": -9.75781955236954e-19
+      }
+    },
+    {
+      "time_s": 0.04,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 3.231606379713128
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.6768393620286872,
+          "absorbed_power_w": -6.768393620286872
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 6.768393620286872,
+          "current_a": 0.6768393620286872,
+          "absorbed_power_w": 4.581115219914003
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 3.231606379713128,
+          "current_a": 0.6768393620286867,
+          "absorbed_power_w": 2.1872784003728674
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.052216398967012946
+      },
+      "total_stored_energy_j": 0.052216398967012946,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 5.551115123125783e-16,
+          "supply": 0.0,
+          "storage": -5.551115123125783e-16
+        },
+        "power_balance_residual_w": -1.7763568394002505e-15,
+        "power_balance_acceptance_threshold_w": 1.4536787240573745e-08,
+        "solver": {
+          "relative_residual": 0.0,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0049999999999999975,
+        "stored_energy_change_j": 0.010363752599375088,
+        "numerical_damping_j": 0.0005726394024892489,
+        "discrete_energy_residual_j": 4.662069341687669e-18
+      }
+    },
+    {
+      "time_s": 0.045,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 3.553910837822026
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.6446089162177974,
+          "absorbed_power_w": -6.446089162177974
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 6.446089162177974,
+          "current_a": 0.6446089162177974,
+          "absorbed_power_w": 4.155206548674833
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 3.553910837822026,
+          "current_a": 0.6446089162177969,
+          "absorbed_power_w": 2.290882613503139
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.06315141121594428
+      },
+      "total_stored_energy_j": 0.06315141121594428,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 4.440892098500626e-16,
+          "supply": 0.0,
+          "storage": -4.440892098500626e-16
+        },
+        "power_balance_residual_w": -1.7763568394002505e-15,
+        "power_balance_acceptance_threshold_w": 1.3892178324355948e-08,
+        "solver": {
+          "relative_residual": 0.0,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0049999999999999975,
+        "stored_energy_change_j": 0.010935012248931335,
+        "numerical_damping_j": 0.0005194008185843529,
+        "discrete_energy_residual_j": 6.830473686658678e-18
+      }
+    },
+    {
+      "time_s": 0.05,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 3.860867464592406
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.6139132535407594,
+          "absorbed_power_w": -6.139132535407594
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 6.139132535407594,
+          "current_a": 0.6139132535407594,
+          "absorbed_power_w": 3.7688948287300073
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 3.860867464592406,
+          "current_a": 0.6139132535407595,
+          "absorbed_power_w": 2.3702377066775875
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.07453148789574097
+      },
+      "total_stored_energy_j": 0.07453148789574097,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": -1.1102230246251565e-16,
+          "supply": 0.0,
+          "storage": 1.1102230246251565e-16
+        },
+        "power_balance_residual_w": 8.881784197001252e-16,
+        "power_balance_acceptance_threshold_w": 1.3278265070815189e-08,
+        "solver": {
+          "relative_residual": 5.4772937493693244e-17,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0050000000000000044,
+        "stored_energy_change_j": 0.011380076679796694,
+        "numerical_damping_j": 0.000471111853591252,
+        "discrete_energy_residual_j": -2.4936649967166602e-18
+      }
+    },
+    {
+      "time_s": 0.055,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 4.153207109135625
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.5846792890864374,
+          "absorbed_power_w": -5.846792890864374
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 5.846792890864375,
+          "current_a": 0.5846792890864375,
+          "absorbed_power_w": 3.4184987108662197
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 4.153207109135625,
+          "current_a": 0.5846792890864382,
+          "absorbed_power_w": 2.4282941799981583
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.08624564645687348
+      },
+      "total_stored_energy_j": 0.08624564645687348,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": -7.771561172376096e-16,
+          "supply": 1.1102230246251565e-16,
+          "storage": 6.661338147750939e-16
+        },
+        "power_balance_residual_w": 3.9968028886505635e-15,
+        "power_balance_acceptance_threshold_w": 1.2693585781728753e-08,
+        "solver": {
+          "relative_residual": 2.7755575615628914e-17,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0049999999999999975,
+        "stored_energy_change_j": 0.011714158561132504,
+        "numerical_damping_j": 0.0004273123388582779,
+        "discrete_energy_residual_j": -1.441988889405721e-17
+      }
+    },
+    {
+      "time_s": 0.06,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 4.431625818224404
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.5568374181775595,
+          "absorbed_power_w": -5.568374181775595
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 5.568374181775596,
+          "current_a": 0.5568374181775596,
+          "absorbed_power_w": 3.1006791028265037
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 4.431625818224404,
+          "current_a": 0.5568374181775585,
+          "absorbed_power_w": 2.4676950789490872
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.09819653696376561
+      },
+      "total_stored_energy_j": 0.09819653696376561,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 9.992007221626409e-16,
+          "supply": 1.1102230246251565e-16,
+          "storage": -1.1102230246251565e-15
+        },
+        "power_balance_residual_w": -3.9968028886505635e-15,
+        "power_balance_acceptance_threshold_w": 1.2136748363551189e-08,
+        "solver": {
+          "relative_residual": 2.7755575615628914e-17,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0049999999999999975,
+        "stored_energy_change_j": 0.011950890506892131,
+        "numerical_damping_j": 0.000387584887853311,
+        "discrete_energy_residual_j": 7.48099499014998e-18
+      }
+    },
+    {
+      "time_s": 0.065,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 4.696786493547052
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.5303213506452948,
+          "absorbed_power_w": -5.303213506452948
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 5.303213506452948,
+          "current_a": 0.5303213506452948,
+          "absorbed_power_w": 2.8124073495024975
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 4.696786493547052,
+          "current_a": 0.5303213506452944,
+          "absorbed_power_w": 2.4908061569504487
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.11029901682983004
+      },
+      "total_stored_energy_j": 0.11029901682983004,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 4.440892098500626e-16,
+          "supply": 0.0,
+          "storage": -4.440892098500626e-16
+        },
+        "power_balance_residual_w": -2.220446049250313e-15,
+        "power_balance_acceptance_threshold_w": 1.1606427012905897e-08,
+        "solver": {
+          "relative_residual": 0.0,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0050000000000000044,
+        "stored_energy_change_j": 0.012102479866064428,
+        "numerical_damping_j": 0.0003515509186878122,
+        "discrete_energy_residual_j": 2.45029690981724e-17
+      }
+    },
+    {
+      "time_s": 0.07,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 4.94932047004481
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.5050679529955189,
+          "absorbed_power_w": -5.050679529955189
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 5.05067952995519,
+          "current_a": 0.505067952995519,
+          "absorbed_power_w": 2.5509363714308377
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 4.94932047004481,
+          "current_a": 0.5050679529955171,
+          "absorbed_power_w": 2.499743158524343
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.12247886557602292
+      },
+      "total_stored_energy_j": 0.12247886557602292,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 1.7763568394002505e-15,
+          "supply": 1.1102230246251565e-16,
+          "storage": -1.887379141862766e-15
+        },
+        "power_balance_residual_w": -7.993605777301127e-15,
+        "power_balance_acceptance_threshold_w": 1.110135905991037e-08,
+        "solver": {
+          "relative_residual": 8.545458051846022e-17,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0050000000000000044,
+        "stored_energy_change_j": 0.012179848746192878,
+        "numerical_damping_j": 0.0003188670464288529,
+        "discrete_energy_residual_j": 3.4314998759166215e-17
+      }
+    },
+    {
+      "time_s": 0.075,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 5.189829019090295
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.4810170980909705,
+          "absorbed_power_w": -4.810170980909705
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 4.810170980909705,
+          "current_a": 0.4810170980909705,
+          "absorbed_power_w": 2.313774486558583
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 5.189829019090295,
+          "current_a": 0.48101709809097054,
+          "absorbed_power_w": 2.496396494351122
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.1346716262369587
+      },
+      "total_stored_energy_j": 0.1346716262369587,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": -5.551115123125783e-17,
+          "supply": 0.0,
+          "storage": 5.551115123125783e-17
+        },
+        "power_balance_residual_w": 4.440892098500626e-16,
+        "power_balance_acceptance_threshold_w": 1.0620341961819411e-08,
+        "solver": {
+          "relative_residual": 0.0,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0049999999999999906,
+        "stored_energy_change_j": 0.012192760660935775,
+        "numerical_damping_j": 0.00028922181081982186,
+        "discrete_energy_residual_j": -1.3769367590565906e-17
+      }
+    },
+    {
+      "time_s": 0.08,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 5.418884780085995
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.4581115219914005,
+          "absorbed_power_w": -4.581115219914005
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 4.581115219914005,
+          "current_a": 0.4581115219914005,
+          "absorbed_power_w": 2.098661665812774
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 5.418884780085995,
+          "current_a": 0.45811152199139965,
+          "absorbed_power_w": 2.4824535541012263
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.14682156129923823
+      },
+      "total_stored_energy_j": 0.14682156129923823,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 8.326672684688674e-16,
+          "supply": 0.0,
+          "storage": -8.326672684688674e-16
+        },
+        "power_balance_residual_w": -4.440892098500626e-15,
+        "power_balance_acceptance_threshold_w": 1.0162230439828006e-08,
+        "solver": {
+          "relative_residual": 0.0,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0050000000000000044,
+        "stored_energy_change_j": 0.012149935062279543,
+        "numerical_damping_j": 0.00026233270822659623,
+        "discrete_energy_residual_j": 2.4015078120553923e-17
+      }
+    },
+    {
+      "time_s": 0.085,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 5.637033123891424
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.4362966876108576,
+          "absorbed_power_w": -4.362966876108576
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 4.362966876108576,
+          "current_a": 0.4362966876108576,
+          "absorbed_power_w": 1.9035479962020627
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 5.637033123891424,
+          "current_a": 0.43629668761085727,
+          "absorbed_power_w": 2.4594188799065115
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.15888071219924554
+      },
+      "total_stored_energy_j": 0.15888071219924554,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 3.3306690738754696e-16,
+          "supply": 0.0,
+          "storage": -3.3306690738754696e-16
+        },
+        "power_balance_residual_w": -1.7763568394002505e-15,
+        "power_balance_acceptance_threshold_w": 9.725933752217152e-09,
+        "solver": {
+          "relative_residual": 0.0,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0050000000000000044,
+        "stored_energy_change_j": 0.01205915090000731,
+        "numerical_damping_j": 0.00023794349952525784,
+        "discrete_energy_residual_j": 1.1411227865409934e-17
+      }
+    },
+    {
+      "time_s": 0.09,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 5.844793451325166
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.41552065486748335,
+          "absorbed_power_w": -4.155206548674833
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 4.155206548674834,
+          "current_a": 0.4155206548674834,
+          "absorbed_power_w": 1.7265741462150226
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 5.844793451325166,
+          "current_a": 0.4155206548674845,
+          "absorbed_power_w": 2.428632402459818
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.17080805244326772
+      },
+      "total_stored_energy_j": 0.17080805244326772,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": -1.1657341758564144e-15,
+          "supply": 5.551115123125783e-17,
+          "storage": 1.1102230246251565e-15
+        },
+        "power_balance_residual_w": 7.105427357601002e-15,
+        "power_balance_acceptance_threshold_w": 9.310413097349675e-09,
+        "solver": {
+          "relative_residual": 7.236219862024628e-17,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0049999999999999906,
+        "stored_energy_change_j": 0.011927340244022172,
+        "numerical_damping_j": 0.00021582176827687812,
+        "discrete_energy_residual_j": -2.13316777436523e-17
+      }
+    },
+    {
+      "time_s": 0.095,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 6.042660429833491
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.3957339570166508,
+          "absorbed_power_w": -3.957339570166508
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 3.957339570166509,
+          "current_a": 0.3957339570166509,
+          "absorbed_power_w": 1.5660536473605648
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 6.042660429833491,
+          "current_a": 0.3957339570166503,
+          "absorbed_power_w": 2.3912859228059404
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.18256872535137736
+      },
+      "total_stored_energy_j": 0.18256872535137736,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 4.996003610813204e-16,
+          "supply": 5.551115123125783e-17,
+          "storage": -5.551115123125783e-16
+        },
+        "power_balance_residual_w": -2.6645352591003757e-15,
+        "power_balance_acceptance_threshold_w": 8.914679140333015e-09,
+        "solver": {
+          "relative_residual": 0.0,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0050000000000000044,
+        "stored_energy_change_j": 0.011760672908109643,
+        "numerical_damping_j": 0.00019575670592007045,
+        "discrete_energy_residual_j": 1.2414114874959026e-17
+      }
+    },
+    {
+      "time_s": 0.1,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 6.231105171269991
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.37688948287300084,
+          "absorbed_power_w": -3.7688948287300086
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 3.7688948287300086,
+          "current_a": 0.37688948287300084,
+          "absorbed_power_w": 1.42045682300278
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 6.231105171269991,
+          "current_a": 0.37688948287300017,
+          "absorbed_power_w": 2.3484380057272243
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.19413335827713815
+      },
+      "total_stored_energy_j": 0.19413335827713815,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 6.661338147750939e-16,
+          "supply": 0.0,
+          "storage": -6.661338147750939e-16
+        },
+        "power_balance_residual_w": -4.218847493575595e-15,
+        "power_balance_acceptance_threshold_w": 8.537789657460014e-09,
+        "solver": {
+          "relative_residual": 0.0,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0050000000000000044,
+        "stored_energy_change_j": 0.011564632925760793,
+        "numerical_damping_j": 0.00017755710287534716,
+        "discrete_energy_residual_j": 1.3904892862126594e-17
+      }
+    },
+    {
+      "time_s": 0.105,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 6.410576353590468
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.3589423646409532,
+          "absorbed_power_w": -3.589423646409532
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 3.589423646409532,
+          "current_a": 0.3589423646409532,
+          "absorbed_power_w": 1.2883962113403902
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 6.410576353590468,
+          "current_a": 0.3589423646409536,
+          "absorbed_power_w": 2.301027435069144
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.20547744592606632
+      },
+      "total_stored_energy_j": 0.20547744592606632,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": -3.885780586188048e-16,
+          "supply": 0.0,
+          "storage": 3.885780586188048e-16
+        },
+        "power_balance_residual_w": 2.220446049250313e-15,
+        "power_balance_acceptance_threshold_w": 8.178847292819067e-09,
+        "solver": {
+          "relative_residual": 6.597567539808225e-17,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0049999999999999906,
+        "stored_energy_change_j": 0.011344087648928164,
+        "numerical_damping_j": 0.00016104952641754846,
+        "discrete_energy_residual_j": -2.439454888092385e-17
+      }
+    },
+    {
+      "time_s": 0.11,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 6.5815012891337785
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.3418498710866221,
+          "absorbed_power_w": -3.4184987108662215
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 3.4184987108662215,
+          "current_a": 0.3418498710866221,
+          "absorbed_power_w": 1.1686133436194017
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 6.5815012891337785,
+          "current_a": 0.341849871086621,
+          "absorbed_power_w": 2.2498853672468124
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.21658079609434794
+      },
+      "total_stored_energy_j": 0.21658079609434794,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 1.1102230246251565e-15,
+          "supply": 0.0,
+          "storage": -1.1102230246251565e-15
+        },
+        "power_balance_residual_w": -7.327471962526033e-15,
+        "power_balance_acceptance_threshold_w": 7.836997421732437e-09,
+        "solver": {
+          "relative_residual": 6.426225355564322e-17,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0050000000000000044,
+        "stored_energy_change_j": 0.011103350168281623,
+        "numerical_damping_j": 0.00014607666795242455,
+        "discrete_energy_residual_j": 6.236872997222864e-17
+      }
+    },
+    {
+      "time_s": 0.115,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 6.744286942032169
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.32557130579678306,
+          "absorbed_power_w": -3.2557130579678306
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 3.2557130579678306,
+          "current_a": 0.32557130579678306,
+          "absorbed_power_w": 1.0599667515822242
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 6.744286942032169,
+          "current_a": 0.32557130579678145,
+          "absorbed_power_w": 2.1957463063855953
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.22742703178232815
+      },
+      "total_stored_energy_j": 0.22742703178232815,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 1.609823385706477e-15,
+          "supply": 0.0,
+          "storage": -1.609823385706477e-15
+        },
+        "power_balance_residual_w": -1.1102230246251565e-14,
+        "power_balance_acceptance_threshold_w": 7.511426115935651e-09,
+        "solver": {
+          "relative_residual": 0.0,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0050000000000000044,
+        "stored_energy_change_j": 0.01084623568798021,
+        "numerical_damping_j": 0.00013249584394777695,
+        "discrete_energy_residual_j": 5.4643789493269423e-17
+      }
+    },
+    {
+      "time_s": 0.12,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 6.899320897173494
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.31006791028265057,
+          "absorbed_power_w": -3.100679102826506
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 3.100679102826506,
+          "current_a": 0.31006791028265057,
+          "absorbed_power_w": 0.9614210898704985
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 6.899320897173494,
+          "current_a": 0.31006791028264996,
+          "absorbed_power_w": 2.139258012956003
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.23800314421087432
+      },
+      "total_stored_energy_j": 0.23800314421087432,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 6.106226635438361e-16,
+          "supply": 0.0,
+          "storage": -6.106226635438361e-16
+        },
+        "power_balance_residual_w": -4.6629367034256575e-15,
+        "power_balance_acceptance_threshold_w": 7.201358205653008e-09,
+        "solver": {
+          "relative_residual": 0.0,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0049999999999999906,
+        "stored_energy_change_j": 0.01057611242854617,
+        "numerical_damping_j": 0.00012017763623381136,
+        "discrete_energy_residual_j": 3.63207727782644e-17
+      }
+    },
+    {
+      "time_s": 0.125,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 7.046972283022375
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.29530277169776253,
+          "absorbed_power_w": -2.9530277169776253
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 2.9530277169776253,
+          "current_a": 0.29530277169776253,
+          "absorbed_power_w": 0.8720372697238086
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 7.046972283022375,
+          "current_a": 0.295302771697761,
+          "absorbed_power_w": 2.080990447253806
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.2482990917884279
+      },
+      "total_stored_energy_j": 0.2482990917884279,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 1.5543122344752192e-15,
+          "supply": 0.0,
+          "storage": -1.5543122344752192e-15
+        },
+        "power_balance_residual_w": -1.0880185641326534e-14,
+        "power_balance_acceptance_threshold_w": 6.90605543395524e-09,
+        "solver": {
+          "relative_residual": 0.0,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0050000000000000044,
+        "stored_energy_change_j": 0.010295947577553588,
+        "numerical_damping_j": 0.0001090046587154751,
+        "discrete_energy_residual_j": 3.0005295123536335e-17
+      }
+    },
+    {
+      "time_s": 0.13,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 7.187592650497499
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.28124073495025004,
+          "absorbed_power_w": -2.8124073495025
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 2.812407349502501,
+          "current_a": 0.2812407349502501,
+          "absorbed_power_w": 0.7909635099535682
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 7.187592650497499,
+          "current_a": 0.2812407349502483,
+          "absorbed_power_w": 2.02144383954892
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.2583074405474283
+      },
+      "total_stored_energy_j": 0.2583074405474283,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 1.7208456881689926e-15,
+          "supply": 5.551115123125783e-17,
+          "storage": -1.7763568394002505e-15
+        },
+        "power_balance_residual_w": -1.2101430968414206e-14,
+        "power_balance_acceptance_threshold_w": 6.624814699004988e-09,
+        "solver": {
+          "relative_residual": 5.884336038295563e-17,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0050000000000000044,
+        "stored_energy_change_j": 0.010008348759000418,
+        "numerical_damping_j": 9.887043874419498e-05,
+        "discrete_energy_residual_j": 5.5185890579512176e-17
+      }
+    },
+    {
+      "time_s": 0.135,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 7.321516809997617
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.2678483190002382,
+          "absorbed_power_w": -2.6784831900023818
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 2.6784831900023827,
+          "current_a": 0.26784831900023826,
+          "absorbed_power_w": 0.717427219912534
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 7.321516809997617,
+          "current_a": 0.26784831900023653,
+          "absorbed_power_w": 1.961055970089836
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.2680230419953884
+      },
+      "total_stored_energy_j": 0.2680230419953884,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 1.6653345369377348e-15,
+          "supply": 5.551115123125783e-17,
+          "storage": -1.7208456881689926e-15
+        },
+        "power_balance_residual_w": -1.176836406102666e-14,
+        "power_balance_acceptance_threshold_w": 6.356966380004752e-09,
+        "solver": {
+          "relative_residual": 5.776700588074525e-17,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0050000000000000044,
+        "stored_energy_change_j": 0.009715601447960076,
+        "numerical_damping_j": 8.967840248906574e-05,
+        "discrete_energy_residual_j": 1.0575036939880489e-16
+      }
+    },
+    {
+      "time_s": 0.14,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 7.449063628569159
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.2550936371430841,
+          "absorbed_power_w": -2.550936371430841
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 2.550936371430841,
+          "current_a": 0.2550936371430841,
+          "absorbed_power_w": 0.6507276371088745
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 7.449063628569159,
+          "current_a": 0.2550936371430834,
+          "absorbed_power_w": 1.9002087343219614
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.27744274471235963
+      },
+      "total_stored_energy_j": 0.27744274471235963,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 6.661338147750939e-16,
+          "supply": 0.0,
+          "storage": -6.661338147750939e-16
+        },
+        "power_balance_residual_w": -4.9960036108132044e-15,
+        "power_balance_acceptance_threshold_w": 6.101872742861677e-09,
+        "solver": {
+          "relative_residual": 0.0,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0050000000000000044,
+        "stored_energy_change_j": 0.009419702716971234,
+        "numerical_damping_j": 8.134095463860903e-05,
+        "discrete_energy_residual_j": -2.087089182034596e-18
+      }
+    },
+    {
+      "time_s": 0.145,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 7.5705367891134845
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.24294632108865155,
+          "absorbed_power_w": -2.4294632108865155
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 2.4294632108865155,
+          "current_a": 0.24294632108865155,
+          "absorbed_power_w": 0.5902291493051017
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 7.5705367891134845,
+          "current_a": 0.2429463210886518,
+          "absorbed_power_w": 1.8392340615814156
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.2865651363766035
+      },
+      "total_stored_energy_j": 0.2865651363766035,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": -2.498001805406602e-16,
+          "supply": 0.0,
+          "storage": 2.498001805406602e-16
+        },
+        "power_balance_residual_w": 1.7763568394002505e-15,
+        "power_balance_acceptance_threshold_w": 5.858926421773033e-09,
+        "solver": {
+          "relative_residual": 5.586685811068255e-17,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.004999999999999977,
+        "stored_energy_change_j": 0.00912239166424389,
+        "numerical_damping_j": 7.377864366313719e-05,
+        "discrete_energy_residual_j": -4.743384504624082e-19
+      }
+    },
+    {
+      "time_s": 0.15,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 7.686225513441413
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.23137744865585863,
+          "absorbed_power_w": -2.3137744865585863
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 2.3137744865585868,
+          "current_a": 0.2313774486558587,
+          "absorbed_power_w": 0.5353552374649452
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 7.686225513441413,
+          "current_a": 0.23137744865585733,
+          "absorbed_power_w": 1.7784192490936312
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.29539031321738857
+      },
+      "total_stored_energy_j": 0.29539031321738857,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 1.304512053934559e-15,
+          "supply": 5.551115123125783e-17,
+          "storage": -1.3600232051658168e-15
+        },
+        "power_balance_residual_w": -9.880984919163893e-15,
+        "power_balance_acceptance_threshold_w": 5.627548973117163e-09,
+        "solver": {
+          "relative_residual": 0.0,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0050000000000000044,
+        "stored_energy_change_j": 0.008825176840785043,
+        "numerical_damping_j": 6.691940468311749e-05,
+        "discrete_energy_residual_j": 5.351892973931571e-17
+      }
+    },
+    {
+      "time_s": 0.155,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 7.7964052508965835
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.22035947491034158,
+          "absorbed_power_w": -2.2035947491034156
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 2.2035947491034165,
+          "current_a": 0.22035947491034164,
+          "absorbed_power_w": 0.4855829818276149
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 7.7964052508965835,
+          "current_a": 0.22035947491034039,
+          "absorbed_power_w": 1.7180117672757917
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.3039196741810391
+      },
+      "total_stored_energy_j": 0.3039196741810391,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 1.1934897514720433e-15,
+          "supply": 5.551115123125783e-17,
+          "storage": -1.2490009027033011e-15
+        },
+        "power_balance_residual_w": -8.93729534823251e-15,
+        "power_balance_acceptance_threshold_w": 5.407189498206822e-09,
+        "solver": {
+          "relative_residual": 5.424834792553523e-17,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0050000000000000044,
+        "stored_energy_change_j": 0.008529360963650534,
+        "numerical_damping_j": 6.069787272845128e-05,
+        "discrete_energy_residual_j": 2.519414798313191e-17
+      }
+    },
+    {
+      "time_s": 0.16,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 7.901338334187222
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.20986616658127777,
+          "absorbed_power_w": -2.0986616658127777
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 2.098661665812778,
+          "current_a": 0.20986616658127782,
+          "absorbed_power_w": 0.4404380787552065
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 7.901338334187222,
+          "current_a": 0.2098661665812765,
+          "absorbed_power_w": 1.6582235870575612
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.31215573735648255
+      },
+      "total_stored_energy_j": 0.31215573735648255,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 1.27675647831893e-15,
+          "supply": 5.551115123125783e-17,
+          "storage": -1.3322676295501878e-15
+        },
+        "power_balance_residual_w": -9.936496070395151e-15,
+        "power_balance_acceptance_threshold_w": 5.197323331625546e-09,
+        "solver": {
+          "relative_residual": 0.0,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0050000000000000044,
+        "stored_energy_change_j": 0.008236063175443453,
+        "numerical_damping_j": 5.50547598444002e-05,
+        "discrete_energy_residual_j": 9.974659986866641e-18
+      }
+    },
+    {
+      "time_s": 0.165,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 8.00127460398783
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.19987253960121687,
+          "absorbed_power_w": -1.9987253960121687
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 1.9987253960121691,
+          "current_a": 0.19987253960121693,
+          "absorbed_power_w": 0.39949032086640024
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 8.00127460398783,
+          "current_a": 0.1998725396012178,
+          "absorbed_power_w": 1.599235075145776
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.3201019764421031
+      },
+      "total_stored_energy_j": 0.3201019764421031,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": -9.43689570931383e-16,
+          "supply": 5.551115123125783e-17,
+          "storage": 8.881784197001252e-16
+        },
+        "power_balance_residual_w": 7.549516567451064e-15,
+        "power_balance_acceptance_threshold_w": 4.997450792024345e-09,
+        "solver": {
+          "relative_residual": 5.285934123649668e-17,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0050000000000000044,
+        "stored_energy_change_j": 0.007946239085620532,
+        "numerical_damping_j": 4.993629010830056e-05,
+        "discrete_energy_residual_j": 1.5707378973883745e-17
+      }
+    },
+    {
+      "time_s": 0.17,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 8.096452003797934
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.19035479962020663,
+          "absorbed_power_w": -1.9035479962020663
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 1.9035479962020663,
+          "current_a": 0.19035479962020663,
+          "absorbed_power_w": 0.3623494973844902
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 8.096452003797934,
+          "current_a": 0.19035479962020557,
+          "absorbed_power_w": 1.5411984988175675
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.3277626752490179
+      },
+      "total_stored_energy_j": 0.3277626752490179,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 1.0547118733938987e-15,
+          "supply": 0.0,
+          "storage": -1.0547118733938987e-15
+        },
+        "power_balance_residual_w": -8.548717289613705e-15,
+        "power_balance_acceptance_threshold_w": 4.807095992404124e-09,
+        "solver": {
+          "relative_residual": 0.0,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0050000000000000044,
+        "stored_energy_change_j": 0.007660698806914834,
+        "numerical_damping_j": 4.529368717306085e-05,
+        "discrete_energy_residual_j": -7.948557177034354e-18
+      }
+    },
+    {
+      "time_s": 0.17500000000000002,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 8.187097146474223
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.18129028535257774,
+          "absorbed_power_w": -1.8129028535257774
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 1.8129028535257774,
+          "current_a": 0.18129028535257774,
+          "absorbed_power_w": 0.3286616756321906
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 8.187097146474223,
+          "current_a": 0.1812902853525776,
+          "absorbed_power_w": 1.4842411778935856
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.3351427984290318
+      },
+      "total_stored_energy_j": 0.3351427984290318,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 1.3877787807814457e-16,
+          "supply": 0.0,
+          "storage": -1.3877787807814457e-16
+        },
+        "power_balance_residual_w": -1.2212453270876722e-15,
+        "power_balance_acceptance_threshold_w": 4.625805707051554e-09,
+        "solver": {
+          "relative_residual": 0.0,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0050000000000000044,
+        "stored_energy_change_j": 0.007380123180013853,
+        "numerical_damping_j": 4.108270945402383e-05,
+        "discrete_energy_residual_j": 6.410345344820545e-17
+      }
+    },
+    {
+      "time_s": 0.18,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 8.273425853784973
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.17265741462150264,
+          "absorbed_power_w": -1.7265741462150264
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 1.726574146215027,
+          "current_a": 0.1726574146215027,
+          "absorbed_power_w": 0.29810582823781495
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 8.273425853784973,
+          "current_a": 0.17265741462150155,
+          "absorbed_power_w": 1.4284683179772026
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.34224787679038804
+      },
+      "total_stored_energy_j": 0.34224787679038804,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 1.0824674490095276e-15,
+          "supply": 5.551115123125783e-17,
+          "storage": -1.1379786002407855e-15
+        },
+        "power_balance_residual_w": -8.770761894538737e-15,
+        "power_balance_acceptance_threshold_w": 4.453148292430044e-09,
+        "solver": {
+          "relative_residual": 0.0,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.004999999999999977,
+        "stored_energy_change_j": 0.007105078361356265,
+        "numerical_damping_j": 3.7263228529726026e-05,
+        "discrete_energy_residual_j": 3.2512512647409064e-17
+      }
+    },
+    {
+      "time_s": 0.185,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 8.355643670271403
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.16443563297285957,
+          "absorbed_power_w": -1.6443563297285957
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 1.6443563297285966,
+          "current_a": 0.16443563297285965,
+          "absorbed_power_w": 0.27039077391185007
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 8.355643670271403,
+          "current_a": 0.16443563297286076,
+          "absorbed_power_w": 1.3739655558167556
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.34908390572273285
+      },
+      "total_stored_energy_j": 0.34908390572273285,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": -1.1934897514720433e-15,
+          "supply": 8.326672684688674e-17,
+          "storage": 1.1102230246251565e-15
+        },
+        "power_balance_residual_w": 9.992007221626409e-15,
+        "power_balance_acceptance_threshold_w": 4.288712659457201e-09,
+        "solver": {
+          "relative_residual": 0.0,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0050000000000000044,
+        "stored_energy_change_j": 0.0068360289323448065,
+        "numerical_damping_j": 3.379884673898178e-05,
+        "discrete_energy_residual_j": -5.385774291821743e-17
+      }
+    },
+    {
+      "time_s": 0.19,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 8.433946352639431
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.1566053647360568,
+          "absorbed_power_w": -1.566053647360568
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 1.5660536473605688,
+          "current_a": 0.15660536473605688,
+          "absorbed_power_w": 0.24525240264113407
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 8.433946352639431,
+          "current_a": 0.15660536473605532,
+          "absorbed_power_w": 1.3208012447194215
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.3556572553959998
+      },
+      "total_stored_energy_j": 0.3556572553959998,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 1.4710455076283324e-15,
+          "supply": 8.326672684688674e-17,
+          "storage": -1.5543122344752192e-15
+        },
+        "power_balance_residual_w": -1.2378986724570495e-14,
+        "power_balance_acceptance_threshold_w": 4.132107294721124e-09,
+        "solver": {
+          "relative_residual": 0.0,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0050000000000000044,
+        "stored_energy_change_j": 0.006573349673266948,
+        "numerical_damping_j": 3.0656550330141205e-05,
+        "discrete_energy_residual_j": 8.506243669506586e-17
+      }
+    },
+    {
+      "time_s": 0.195,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 8.508520335847077
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.14914796641529227,
+          "absorbed_power_w": -1.4914796641529227
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 1.4914796641529229,
+          "current_a": 0.1491479664152923,
+          "absorbed_power_w": 0.22245115885817157
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 8.508520335847077,
+          "current_a": 0.1491479664152918,
+          "absorbed_power_w": 1.2690285052947472
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.3619745915276163
+      },
+      "total_stored_energy_j": 0.3619745915276163,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 4.718447854656915e-16,
+          "supply": 2.7755575615628914e-17,
+          "storage": -4.996003610813204e-16
+        },
+        "power_balance_residual_w": -3.885780586188048e-15,
+        "power_balance_acceptance_threshold_w": 3.982959328305841e-09,
+        "solver": {
+          "relative_residual": 0.0,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0050000000000000044,
+        "stored_energy_change_j": 0.006317336131616502,
+        "numerical_damping_j": 2.7806394857271315e-05,
+        "discrete_energy_residual_j": -1.2434443665693129e-17
+      }
+    },
+    {
+      "time_s": 0.2,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 8.579543176997216
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.14204568230027836,
+          "absorbed_power_w": -1.4204568230027836
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 1.4204568230027839,
+          "current_a": 0.1420456823002784,
+          "absorbed_power_w": 0.20176975860151622
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 8.579543176997216,
+          "current_a": 0.14204568230027792,
+          "absorbed_power_w": 1.2186870644012637
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.3680428056297974
+      },
+      "total_stored_energy_j": 0.3680428056297974,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 4.440892098500626e-16,
+          "supply": 2.7755575615628914e-17,
+          "storage": -4.718447854656915e-16
+        },
+        "power_balance_residual_w": -3.6914915568786455e-15,
+        "power_balance_acceptance_threshold_w": 3.840913646005564e-09,
+        "solver": {
+          "relative_residual": 0.0,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0050000000000000044,
+        "stored_energy_change_j": 0.006068214102181113,
+        "numerical_damping_j": 2.52212198251894e-05,
+        "discrete_energy_residual_j": 3.954966237319779e-17
+      }
+    },
+    {
+      "time_s": 0.20500000000000002,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 8.647183978092587
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.13528160219074126,
+          "absorbed_power_w": -1.3528160219074126
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 1.3528160219074135,
+          "current_a": 0.13528160219074134,
+          "absorbed_power_w": 0.18301111891293992
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 8.647183978092587,
+          "current_a": 0.1352816021907407,
+          "absorbed_power_w": 1.169804902994468
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.3738689537549057
+      },
+      "total_stored_energy_j": 0.3738689537549057,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 5.551115123125783e-16,
+          "supply": 8.326672684688674e-17,
+          "storage": -6.38378239159465e-16
+        },
+        "power_balance_residual_w": -4.718447854656915e-15,
+        "power_balance_acceptance_threshold_w": 3.7056320438148202e-09,
+        "solver": {
+          "relative_residual": 0.0,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0050000000000000044,
+        "stored_energy_change_j": 0.005826148125108288,
+        "numerical_damping_j": 2.2876389864117314e-05,
+        "discrete_energy_residual_j": -3.639192354583376e-17
+      }
+    },
+    {
+      "time_s": 0.21,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 8.711603788659607
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.12883962113403924,
+          "absorbed_power_w": -1.2883962113403924
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 1.2883962113403928,
+          "current_a": 0.1288396211340393,
+          "absorbed_power_w": 0.16599647973962783
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 8.711603788659607,
+          "current_a": 0.12883962113404185,
+          "absorbed_power_w": 1.1223997316007874
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.37946020285294213
+      },
+      "total_stored_energy_j": 0.37946020285294213,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": -2.609024107869118e-15,
+          "supply": 5.551115123125783e-17,
+          "storage": 2.55351295663786e-15
+        },
+        "power_balance_residual_w": 2.2870594307278225e-14,
+        "power_balance_acceptance_threshold_w": 3.576792422680808e-09,
+        "solver": {
+          "relative_residual": 9.709856299242473e-17,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.004999999999999977,
+        "stored_energy_change_j": 0.005591249098036433,
+        "numerical_damping_j": 2.074955996745411e-05,
+        "discrete_energy_residual_j": -9.037163920845581e-17
+      }
+    },
+    {
+      "time_s": 0.215,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 8.772955989199627
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.12270440108003733,
+          "absorbed_power_w": -1.2270440108003733
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 1.2270440108003733,
+          "current_a": 0.12270440108003733,
+          "absorbed_power_w": 0.15056370044410666
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 8.772955989199627,
+          "current_a": 0.122704401080039,
+          "absorbed_power_w": 1.0764803103562812
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.38482378394216804
+      },
+      "total_stored_energy_j": 0.38482378394216804,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": -1.6653345369377348e-15,
+          "supply": 0.0,
+          "storage": 1.6653345369377348e-15
+        },
+        "power_balance_residual_w": 1.459943277382081e-14,
+        "power_balance_acceptance_threshold_w": 3.454088021600761e-09,
+        "solver": {
+          "relative_residual": 0.0,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0050000000000000044,
+        "stored_energy_change_j": 0.005363581089225911,
+        "numerical_damping_j": 1.8820462555513877e-05,
+        "discrete_energy_residual_j": -8.663452984516984e-17
+      }
+    },
+    {
+      "time_s": 0.22,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 8.831386656380596
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.11686133436194035,
+          "absorbed_power_w": -1.1686133436194035
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 1.1686133436194037,
+          "current_a": 0.11686133436194038,
+          "absorbed_power_w": 0.13656571468853226
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 8.831386656380596,
+          "current_a": 0.11686133436193903,
+          "absorbed_power_w": 1.0320476289308596
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.3899669513724862
+      },
+      "total_stored_energy_j": 0.3899669513724862,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 1.3183898417423734e-15,
+          "supply": 2.7755575615628914e-17,
+          "storage": -1.3461454173580023e-15
+        },
+        "power_balance_residual_w": -1.1685097334179773e-14,
+        "power_balance_acceptance_threshold_w": 3.337226687238796e-09,
+        "solver": {
+          "relative_residual": 9.578158472170069e-17,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0050000000000000044,
+        "stored_energy_change_j": 0.005143167430318174,
+        "numerical_damping_j": 1.707071433606617e-05,
+        "discrete_energy_residual_j": 1.2049213081281873e-16
+      }
+    },
+    {
+      "time_s": 0.225,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 8.887034910838663
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.11129650891613363,
+          "absorbed_power_w": -1.1129650891613363
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 1.112965089161337,
+          "current_a": 0.1112965089161337,
+          "absorbed_power_w": 0.12386912896919028
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 8.887034910838663,
+          "current_a": 0.11129650891613342,
+          "absorbed_power_w": 0.9890959601921443
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.39489694753232585
+      },
+      "total_stored_energy_j": 0.39489694753232585,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 2.0816681711721685e-16,
+          "supply": 6.938893903907228e-17,
+          "storage": -2.7755575615628914e-16
+        },
+        "power_balance_residual_w": -1.7208456881689926e-15,
+        "power_balance_acceptance_threshold_w": 3.225930178322671e-09,
+        "solver": {
+          "relative_residual": 0.0,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0050000000000000044,
+        "stored_energy_change_j": 0.004929996159839634,
+        "numerical_damping_j": 1.5483641121148735e-05,
+        "discrete_energy_residual_j": -4.791834789207028e-17
+      }
+    },
+    {
+      "time_s": 0.23,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 8.940033248417775
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.10599667515822242,
+          "absorbed_power_w": -1.0599667515822242
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 1.059966751582225,
+          "current_a": 0.1059966751582225,
+          "absorbed_power_w": 0.11235295144597744
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 8.940033248417775,
+          "current_a": 0.10599667515822365,
+          "absorbed_power_w": 0.9476138001362578
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.39962097241407635
+      },
+      "total_stored_energy_j": 0.39962097241407635,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": -1.2351231148954867e-15,
+          "supply": 8.326672684688674e-17,
+          "storage": 1.1518563880486e-15
+        },
+        "power_balance_residual_w": 1.1088352458443751e-14,
+        "power_balance_acceptance_threshold_w": 3.11993350316446e-09,
+        "solver": {
+          "relative_residual": 0.0,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0050000000000000044,
+        "stored_energy_change_j": 0.004724024881750499,
+        "numerical_damping_j": 1.404411893074751e-05,
+        "discrete_energy_residual_j": -8.605854744103691e-18
+      }
+    },
+    {
+      "time_s": 0.23500000000000001,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 8.990507855635975
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.10094921443640237,
+          "absorbed_power_w": -1.0094921443640237
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 1.0094921443640246,
+          "current_a": 0.10094921443640245,
+          "absorbed_power_w": 0.10190743895326766
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 8.990507855635975,
+          "current_a": 0.10094921443640095,
+          "absorbed_power_w": 0.9075847054107434
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.40414615751126093
+      },
+      "total_stored_energy_j": 0.40414615751126093,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 1.4155343563970746e-15,
+          "supply": 8.326672684688674e-17,
+          "storage": -1.4988010832439613e-15
+        },
+        "power_balance_residual_w": -1.2587153541687712e-14,
+        "power_balance_acceptance_threshold_w": 3.018984288728035e-09,
+        "solver": {
+          "relative_residual": 9.408636562259903e-17,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0050000000000000044,
+        "stored_energy_change_j": 0.004525185097184581,
+        "numerical_damping_j": 1.2738429869158101e-05,
+        "discrete_energy_residual_j": 4.548566926755593e-17
+      }
+    },
+    {
+      "time_s": 0.24,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 9.038578910129502
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.09614210898704978,
+          "absorbed_power_w": -0.9614210898704978
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 0.9614210898704982,
+          "current_a": 0.09614210898704982,
+          "absorbed_power_w": 0.09243305120477766
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 9.038578910129502,
+          "current_a": 0.09614210898705311,
+          "absorbed_power_w": 0.8689880386657503
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.40847954357318905
+      },
+      "total_stored_energy_j": 0.40847954357318905,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": -3.3306690738754696e-15,
+          "supply": 4.163336342344337e-17,
+          "storage": 3.2890357104520263e-15
+        },
+        "power_balance_residual_w": 3.011479954295737e-14,
+        "power_balance_acceptance_threshold_w": 2.922842179741026e-09,
+        "solver": {
+          "relative_residual": 9.358597381832133e-17,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.004999999999999977,
+        "stored_energy_change_j": 0.004333386061928124,
+        "numerical_damping_j": 1.1554131400597891e-05,
+        "discrete_energy_residual_j": -1.4097846967511124e-16
+      }
+    },
+    {
+      "time_s": 0.245,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 9.08436086679
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.091563913321,
+          "absorbed_power_w": -0.91563913321
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 0.91563913321,
+          "current_a": 0.091563913321,
+          "absorbed_power_w": 0.08383950222655602
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 9.08436086679,
+          "current_a": 0.09156391332099638,
+          "absorbed_power_w": 0.8317996309834111
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.4126280617903278
+      },
+      "total_stored_energy_j": 0.4126280617903278,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 3.622102617839573e-15,
+          "supply": 0.0,
+          "storage": -3.622102617839573e-15
+        },
+        "power_balance_residual_w": -3.284872374109682e-14,
+        "power_balance_acceptance_threshold_w": 2.8312782664199674e-09,
+        "solver": {
+          "relative_residual": 0.0,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0050000000000000044,
+        "stored_energy_change_j": 0.004148518217138741,
+        "numerical_damping_j": 1.047993777831869e-05,
+        "discrete_energy_residual_j": 1.6365354167310886e-16
+      }
+    },
+    {
+      "time_s": 0.25,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 9.12796273027619
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.08720372697238099,
+          "absorbed_power_w": -0.8720372697238099
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 0.8720372697238101,
+          "current_a": 0.08720372697238102,
+          "absorbed_power_w": 0.07604489997873572
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 9.12796273027619,
+          "current_a": 0.0872037269723797,
+          "absorbed_power_w": 0.7959923697450624
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.41659851802655584
+      },
+      "total_stored_energy_j": 0.41659851802655584,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 1.2906342661267445e-15,
+          "supply": 2.7755575615628914e-17,
+          "storage": -1.3183898417423734e-15
+        },
+        "power_balance_residual_w": -1.1809997424450103e-14,
+        "power_balance_acceptance_threshold_w": 2.7440745394476083e-09,
+        "solver": {
+          "relative_residual": 0.0,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0050000000000000044,
+        "stored_energy_change_j": 0.003970456236228048,
+        "numerical_damping_j": 9.505612497341694e-06,
+        "discrete_energy_residual_j": -1.5468515682758033e-17
+      }
+    },
+    {
+      "time_s": 0.255,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 9.169488314548751
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.08305116854512484,
+          "absorbed_power_w": -0.8305116854512484
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 0.8305116854512491,
+          "current_a": 0.08305116854512491,
+          "absorbed_power_w": 0.06897496596710745
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 9.169488314548751,
+          "current_a": 0.083051168545122,
+          "absorbed_power_w": 0.7615367194841149
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.4203975797532305
+      },
+      "total_stored_energy_j": 0.4203975797532305,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 2.8449465006019636e-15,
+          "supply": 6.938893903907228e-17,
+          "storage": -2.914335439641036e-15
+        },
+        "power_balance_residual_w": -2.603472992745992e-14,
+        "power_balance_acceptance_threshold_w": 2.661023370902471e-09,
+        "solver": {
+          "relative_residual": 0.0,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0050000000000000044,
+        "stored_energy_change_j": 0.0037990617266746574,
+        "numerical_damping_j": 8.621870745887841e-06,
+        "discrete_energy_residual_j": 1.632656005832664e-16
+      }
+    },
+    {
+      "time_s": 0.26,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 9.209036490046428
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.07909635099535717,
+          "absorbed_power_w": -0.7909635099535717
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 0.7909635099535723,
+          "current_a": 0.07909635099535724,
+          "absorbed_power_w": 0.0625623274078075
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 9.209036490046428,
+          "current_a": 0.07909635099535343,
+          "absorbed_power_w": 0.7284011825457298
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.4240317653750331
+      },
+      "total_stored_energy_j": 0.4240317653750331,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 3.733124920302089e-15,
+          "supply": 6.938893903907228e-17,
+          "storage": -3.802513859341161e-15
+        },
+        "power_balance_residual_w": -3.434752482434078e-14,
+        "power_balance_acceptance_threshold_w": 2.5819270199071092e-09,
+        "solver": {
+          "relative_residual": 0.0,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0050000000000000044,
+        "stored_energy_change_j": 0.0036341856218026214,
+        "numerical_damping_j": 7.8202909259752e-06,
+        "discrete_energy_residual_j": 2.271623779923418e-16
+      }
+    },
+    {
+      "time_s": 0.265,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 9.246701419091835
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.07532985809081649,
+          "absorbed_power_w": -0.7532985809081649
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 0.7532985809081651,
+          "current_a": 0.07532985809081652,
+          "absorbed_power_w": 0.056745875199825546
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 9.246701419091835,
+          "current_a": 0.07532985809081431,
+          "absorbed_power_w": 0.6965527057083193
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.4275074356691748
+      },
+      "total_stored_energy_j": 0.4275074356691748,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 2.1788126858268697e-15,
+          "supply": 2.7755575615628914e-17,
+          "storage": -2.2065682614424986e-15
+        },
+        "power_balance_residual_w": -2.0095036745715333e-14,
+        "power_balance_acceptance_threshold_w": 2.50659716181631e-09,
+        "solver": {
+          "relative_residual": 0.0,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0050000000000000044,
+        "stored_energy_change_j": 0.0034756702941416973,
+        "numerical_damping_j": 7.093234399977792e-06,
+        "discrete_energy_residual_j": 2.477063150950476e-17
+      }
+    },
+    {
+      "time_s": 0.27,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 9.282572780087461
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.07174272199125387,
+          "absorbed_power_w": -0.7174272199125387
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 0.7174272199125387,
+          "current_a": 0.07174272199125387,
+          "absorbed_power_w": 0.051470181587143414
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 9.282572780087461,
+          "current_a": 0.07174272199125291,
+          "absorbed_power_w": 0.6659570383253863
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.43083078708810335
+      },
+      "total_stored_energy_j": 0.43083078708810335,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 9.575673587391975e-16,
+          "supply": 0.0,
+          "storage": -9.575673587391975e-16
+        },
+        "power_balance_residual_w": -8.916478666520788e-15,
+        "power_balance_acceptance_threshold_w": 2.4348544398250687e-09,
+        "solver": {
+          "relative_residual": 0.0,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0050000000000000044,
+        "stored_energy_change_j": 0.003323351418928533,
+        "numerical_damping_j": 6.433772698392767e-06,
+        "discrete_energy_residual_j": 5.339272183017482e-17
+      }
+    },
+    {
+      "time_s": 0.275,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 9.316735981035675
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.06832640189643246,
+          "absorbed_power_w": -0.6832640189643246
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 0.6832640189643246,
+          "current_a": 0.06832640189643246,
+          "absorbed_power_w": 0.0466849719611281
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 9.316735981035675,
+          "current_a": 0.06832640189642797,
+          "absorbed_power_w": 0.6365790470031547
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.43400784670162396
+      },
+      "total_stored_energy_j": 0.43400784670162396,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 4.496403249731884e-15,
+          "supply": 0.0,
+          "storage": -4.496403249731884e-15
+        },
+        "power_balance_residual_w": -4.184153024056059e-14,
+        "power_balance_acceptance_threshold_w": 2.3665280379286075e-09,
+        "solver": {
+          "relative_residual": 9.079190512213959e-17,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0050000000000000044,
+        "stored_energy_change_j": 0.0031770596135206053,
+        "numerical_damping_j": 5.8356214951402545e-06,
+        "discrete_energy_residual_j": 2.401202880194381e-16
+      }
+    },
+    {
+      "time_s": 0.28,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 9.349272362891119
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.0650727637108881,
+          "absorbed_power_w": -0.650727637108881
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 0.650727637108881,
+          "current_a": 0.0650727637108881,
+          "absorbed_power_w": 0.04234464576973076
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 9.349272362891119,
+          "current_a": 0.06507276371088716,
+          "absorbed_power_w": 0.6083829913391414
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.43704446857759843
+      },
+      "total_stored_energy_j": 0.43704446857759843,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 9.43689570931383e-16,
+          "supply": 0.0,
+          "storage": -9.43689570931383e-16
+        },
+        "power_balance_residual_w": -8.86096751528953e-15,
+        "power_balance_acceptance_threshold_w": 2.3014552742177533e-09,
+        "solver": {
+          "relative_residual": 0.0,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0050000000000000044,
+        "stored_energy_change_j": 0.0030366218759744767,
+        "numerical_damping_j": 5.2930807212162e-06,
+        "discrete_energy_residual_j": 6.108293395829661e-17
+      }
+    },
+    {
+      "time_s": 0.28500000000000003,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 9.380259393229636
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.06197406067703637,
+          "absorbed_power_w": -0.6197406067703637
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 0.6197406067703639,
+          "current_a": 0.06197406067703639,
+          "absorbed_power_w": 0.038407841968009886
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 9.380259393229636,
+          "current_a": 0.06197406067703421,
+          "absorbed_power_w": 0.5813327648023335
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.4399463314213641
+      },
+      "total_stored_energy_j": 0.4399463314213641,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 2.157996004115148e-15,
+          "supply": 2.0816681711721685e-17,
+          "storage": -2.1788126858268697e-15
+        },
+        "power_balance_residual_w": -2.0268509093313014e-14,
+        "power_balance_acceptance_threshold_w": 2.2394812135407073e-09,
+        "solver": {
+          "relative_residual": 0.0,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0050000000000000044,
+        "stored_energy_change_j": 0.0029018628437656457,
+        "numerical_damping_j": 4.8009802460009055e-06,
+        "discrete_energy_residual_j": 1.2480098741550136e-16
+      }
+    },
+    {
+      "time_s": 0.29,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 9.40977085069489
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.05902291493051093,
+          "absorbed_power_w": -0.5902291493051093
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 0.5902291493051095,
+          "current_a": 0.05902291493051095,
+          "absorbed_power_w": 0.034837044868943325
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 9.40977085069489,
+          "current_a": 0.05902291493050942,
+          "absorbed_power_w": 0.5553921044361518
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.44271893731293627
+      },
+      "total_stored_energy_j": 0.44271893731293627,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 1.5057399771478686e-15,
+          "supply": 2.0816681711721685e-17,
+          "storage": -1.5265566588595902e-15
+        },
+        "power_balance_residual_w": -1.412064909445121e-14,
+        "power_balance_acceptance_threshold_w": 2.1804582986102042e-09,
+        "solver": {
+          "relative_residual": 0.0,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.004999999999999949,
+        "stored_energy_change_j": 0.0027726058915721885,
+        "numerical_damping_j": 4.354630608617601e-06,
+        "discrete_energy_residual_j": -4.7137383514701814e-18
+      }
+    },
+    {
+      "time_s": 0.295,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 9.4378770006618
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.05621229993381993,
+          "absorbed_power_w": -0.5621229993381993
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 0.5621229993382002,
+          "current_a": 0.05621229993382002,
+          "absorbed_power_w": 0.03159822663849742
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 9.4378770006618,
+          "current_a": 0.056212299933818544,
+          "absorbed_power_w": 0.5305247726996889
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.4453676113981049
+      },
+      "total_stored_energy_j": 0.4453676113981049,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 1.3877787807814457e-15,
+          "supply": 9.020562075079397e-17,
+          "storage": -1.4779844015322396e-15
+        },
+        "power_balance_residual_w": -1.2996548282018239e-14,
+        "power_balance_acceptance_threshold_w": 2.1242459986763856e-09,
+        "solver": {
+          "relative_residual": 0.0,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0050000000000000044,
+        "stored_energy_change_j": 0.002648674085168612,
+        "numerical_damping_j": 3.949778329811978e-06,
+        "discrete_energy_residual_j": 8.817189464443639e-17
+      }
+    },
+    {
+      "time_s": 0.3,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 9.464644762535046
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.053535523746495284,
+          "absorbed_power_w": -0.5353552374649528
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 0.5353552374649535,
+          "current_a": 0.05353552374649535,
+          "absorbed_power_w": 0.028660523028115677
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 9.464644762535046,
+          "current_a": 0.05353552374649335,
+          "absorbed_power_w": 0.5066947144368189
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.44789750240491044
+      },
+      "total_stored_energy_j": 0.44789750240491044,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 1.9359513991901167e-15,
+          "supply": 6.938893903907228e-17,
+          "storage": -2.005340338229189e-15
+        },
+        "power_balance_residual_w": -1.8256229861179918e-14,
+        "power_balance_acceptance_threshold_w": 2.0707104749298877e-09,
+        "solver": {
+          "relative_residual": 0.0,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0050000000000000044,
+        "stored_energy_change_j": 0.0025298910068055624,
+        "numerical_damping_j": 3.5825653785141983e-06,
+        "discrete_energy_residual_j": 1.1146657124335053e-16
+      }
+    },
+    {
+      "time_s": 0.305,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 9.490137869080996
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.05098621309190032,
+          "absorbed_power_w": -0.5098621309190032
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 0.5098621309190037,
+          "current_a": 0.050986213091900365,
+          "absorbed_power_w": 0.025995939254526722
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 9.490137869080996,
+          "current_a": 0.050986213091899615,
+          "absorbed_power_w": 0.4838661916644698
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.450313583870826
+      },
+      "total_stored_energy_j": 0.450313583870826,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 7.077671781985373e-16,
+          "supply": 4.163336342344337e-17,
+          "storage": -7.494005416219807e-16
+        },
+        "power_balance_residual_w": -6.696032617270475e-15,
+        "power_balance_acceptance_threshold_w": 2.019724261838e-09,
+        "solver": {
+          "relative_residual": 0.0,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0050000000000000044,
+        "stored_energy_change_j": 0.0024160814659155427,
+        "numerical_damping_j": 3.24949240681575e-06,
+        "discrete_energy_residual_j": 2.5986970821761934e-17
+      }
+    },
+    {
+      "time_s": 0.31,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 9.514417018172376
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.04855829818276236,
+          "absorbed_power_w": -0.4855829818276236
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 0.4855829818276245,
+          "current_a": 0.04855829818276245,
+          "absorbed_power_w": 0.02357908322406071
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 9.514417018172376,
+          "current_a": 0.04855829818275832,
+          "absorbed_power_w": 0.46200389860352453
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.4526206559784406
+      },
+      "total_stored_energy_j": 0.4526206559784406,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 4.038436252074007e-15,
+          "supply": 9.020562075079397e-17,
+          "storage": -4.128641872824801e-15
+        },
+        "power_balance_residual_w": -3.836167494775111e-14,
+        "power_balance_acceptance_threshold_w": 1.971165963655209e-09,
+        "solver": {
+          "relative_residual": 8.890552175951408e-17,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0050000000000000044,
+        "stored_energy_change_j": 0.002307072107614605,
+        "numerical_damping_j": 2.947385403007093e-06,
+        "discrete_energy_residual_j": 2.0409385919034455e-16
+      }
+    },
+    {
+      "time_s": 0.315,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 9.537540017307023
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.04624599826929765,
+          "absorbed_power_w": -0.4624599826929765
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 0.4624599826929767,
+          "current_a": 0.04624599826929767,
+          "absorbed_power_w": 0.02138692355923883
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 9.537540017307023,
+          "current_a": 0.0462459982692955,
+          "absorbed_power_w": 0.44107305913371714
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.45482334790866424
+      },
+      "total_stored_energy_j": 0.45482334790866424,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 2.1510571102112408e-15,
+          "supply": 2.0816681711721685e-17,
+          "storage": -2.1718737919229625e-15
+        },
+        "power_balance_residual_w": -2.053218706166149e-14,
+        "power_balance_acceptance_threshold_w": 1.9249199653859324e-09,
+        "solver": {
+          "relative_residual": 0.0,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0050000000000000044,
+        "stored_energy_change_j": 0.0022026919302236547,
+        "numerical_damping_j": 2.6733654449046076e-06,
+        "discrete_energy_residual_j": 1.31081736719392e-16
+      }
+    },
+    {
+      "time_s": 0.32,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 9.559561921244782
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.04404380787552176,
+          "absorbed_power_w": -0.44043807875521757
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 0.4404380787552178,
+          "current_a": 0.04404380787552178,
+          "absorbed_power_w": 0.019398570121758742
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 9.559561921244782,
+          "current_a": 0.044043807875517836,
+          "absorbed_power_w": 0.4210395086334214
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.45692612063056615
+      },
+      "total_stored_energy_j": 0.45692612063056615,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 3.920475055707584e-15,
+          "supply": 2.0816681711721685e-17,
+          "storage": -3.941291737419306e-15
+        },
+        "power_balance_residual_w": -3.744574095243536e-14,
+        "power_balance_acceptance_threshold_w": 1.8808761575103978e-09,
+        "solver": {
+          "relative_residual": 8.848566662436241e-17,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0050000000000000044,
+        "stored_energy_change_j": 0.002102772721901902,
+        "numerical_damping_j": 2.4248212652194125e-06,
+        "discrete_energy_residual_j": 1.7482251811560406e-16
+      }
+    },
+    {
+      "time_s": 0.325,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 9.580535163090268
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.0419464836909732,
+          "absorbed_power_w": -0.419464836909732
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 0.41946483690973224,
+          "current_a": 0.04194648369097322,
+          "absorbed_power_w": 0.017595074940370825
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 9.580535163090268,
+          "current_a": 0.04194648369097106,
+          "absorbed_power_w": 0.40186976196934066
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.45893327005604534
+      },
+      "total_stored_energy_j": 0.45893327005604534,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 2.1441182163073336e-15,
+          "supply": 2.0816681711721685e-17,
+          "storage": -2.1649348980190553e-15
+        },
+        "power_balance_residual_w": -2.0539125955565396e-14,
+        "power_balance_acceptance_threshold_w": 1.8389296738194436e-09,
+        "solver": {
+          "relative_residual": 0.0,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0050000000000000044,
+        "stored_energy_change_j": 0.0020071494254791933,
+        "numerical_damping_j": 2.19938436754613e-06,
+        "discrete_energy_residual_j": 6.80336863234654e-17
+      }
+    },
+    {
+      "time_s": 0.33,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 9.600509679133587
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.039949032086641245,
+          "absorbed_power_w": -0.39949032086641245
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 0.3994903208664127,
+          "current_a": 0.039949032086641266,
+          "absorbed_power_w": 0.015959251646594935
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 9.600509679133587,
+          "current_a": 0.0399490320866391,
+          "absorbed_power_w": 0.38353106921979696
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.4608489304956885
+      },
+      "total_stored_energy_j": 0.4608489304956885,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 2.1441182163073336e-15,
+          "supply": 2.0816681711721685e-17,
+          "storage": -2.1649348980190553e-15
+        },
+        "power_balance_residual_w": -2.0556473190325164e-14,
+        "power_balance_acceptance_threshold_w": 1.7989806417328045e-09,
+        "solver": {
+          "relative_residual": 0.0,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0050000000000000044,
+        "stored_energy_change_j": 0.001915660439643141,
+        "numerical_damping_j": 1.994906455824154e-06,
+        "discrete_energy_residual_j": 1.240793153444407e-16
+      }
+    },
+    {
+      "time_s": 0.335,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 9.619533027746273
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.03804669722537257,
+          "absorbed_power_w": -0.3804669722537257
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 0.3804669722537266,
+          "current_a": 0.03804669722537266,
+          "absorbed_power_w": 0.014475511697591798
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 9.619533027746273,
+          "current_a": 0.0380466972253721,
+          "absorbed_power_w": 0.3659914605561294
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.46267707835950694
+      },
+      "total_stored_energy_j": 0.46267707835950694,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 4.718447854656915e-16,
+          "supply": 9.020562075079397e-17,
+          "storage": -5.620504062164855e-16
+        },
+        "power_balance_residual_w": -4.512015761015675e-15,
+        "power_balance_acceptance_threshold_w": 1.760933944507447e-09,
+        "solver": {
+          "relative_residual": 0.0,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0050000000000000044,
+        "stored_energy_change_j": 0.0018281478638184634,
+        "numerical_damping_j": 1.8094389621989239e-06,
+        "discrete_energy_residual_j": 8.99019594392033e-18
+      }
+    },
+    {
+      "time_s": 0.34,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 9.637650502615497
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.03623494973845032,
+          "absorbed_power_w": -0.36234949738450317
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 0.3623494973845034,
+          "current_a": 0.03623494973845034,
+          "absorbed_power_w": 0.013129715825480223
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 9.637650502615497,
+          "current_a": 0.036234949738446404,
+          "absorbed_power_w": 0.34921978155898525
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.46442153605282366
+      },
+      "total_stored_energy_j": 0.46442153605282366,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 3.913536161803677e-15,
+          "supply": 2.0816681711721685e-17,
+          "storage": -3.9343528435153985e-15
+        },
+        "power_balance_residual_w": -3.769554113297602e-14,
+        "power_balance_acceptance_threshold_w": 1.7246989947689687e-09,
+        "solver": {
+          "relative_residual": 8.776871593430954e-17,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0050000000000000044,
+        "stored_energy_change_j": 0.0017444576933167144,
+        "numerical_damping_j": 1.6412144781846738e-06,
+        "discrete_energy_residual_j": 2.1730418503572262e-16
+      }
+    },
+    {
+      "time_s": 0.34500000000000003,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 9.654905240586187
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.03450947594138132,
+          "absorbed_power_w": -0.3450947594138132
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 0.3450947594138132,
+          "current_a": 0.03450947594138132,
+          "absorbed_power_w": 0.01190903929748776
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 9.654905240586187,
+          "current_a": 0.0345094759413804,
+          "absorbed_power_w": 0.3331857201163166
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.46608597602349305
+      },
+      "total_stored_energy_j": 0.46608597602349305,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 9.159339953157541e-16,
+          "supply": 0.0,
+          "storage": -9.159339953157541e-16
+        },
+        "power_balance_residual_w": -8.833211939673902e-15,
+        "power_balance_acceptance_threshold_w": 1.6901895188276175e-09,
+        "solver": {
+          "relative_residual": 0.0,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0050000000000000044,
+        "stored_energy_change_j": 0.0016644399706693958,
+        "numerical_damping_j": 1.4886299121858936e-06,
+        "discrete_energy_residual_j": 4.695124802454268e-17
+      }
+    },
+    {
+      "time_s": 0.35000000000000003,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 9.671338324367795
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.03286616756322047,
+          "absorbed_power_w": -0.3286616756322047
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 0.3286616756322047,
+          "current_a": 0.03286616756322047,
+          "absorbed_power_w": 0.010801849702936855
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 9.671338324367795,
+          "current_a": 0.03286616756321689,
+          "absorbed_power_w": 0.31785982592923323
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.46767392492192633
+      },
+      "total_stored_energy_j": 0.46767392492192633,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 3.58046925441613e-15,
+          "supply": 0.0,
+          "storage": -3.58046925441613e-15
+        },
+        "power_balance_residual_w": -3.4633754197876954e-14,
+        "power_balance_acceptance_threshold_w": 1.657323351264375e-09,
+        "solver": {
+          "relative_residual": 8.746299435176771e-17,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0050000000000000044,
+        "stored_energy_change_j": 0.001587948898433278,
+        "numerical_damping_j": 1.3502312128668151e-06,
+        "discrete_energy_residual_j": 1.9599220080809398e-16
+      }
+    },
+    {
+      "time_s": 0.355,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 9.686988880350281
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.03130111196497187,
+          "absorbed_power_w": -0.3130111196497187
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 0.31301111964971895,
+          "current_a": 0.031301111964971894,
+          "absorbed_power_w": 0.009797596102437066
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 9.686988880350281,
+          "current_a": 0.03130111196497186,
+          "absorbed_power_w": 0.30321352354728154
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.46918876784015
+      },
+      "total_stored_energy_j": 0.46918876784015,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 1.3877787807814457e-17,
+          "supply": 2.0816681711721685e-17,
+          "storage": -3.469446951953614e-17
+        },
+        "power_balance_residual_w": -1.231653667943533e-16,
+        "power_balance_acceptance_threshold_w": 1.6260222392994374e-09,
+        "solver": {
+          "relative_residual": 0.0,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.004999999999999949,
+        "stored_energy_change_j": 0.00151484291822368,
+        "numerical_damping_j": 1.2246995128046057e-06,
+        "discrete_energy_residual_j": -9.168750489201537e-17
+      }
+    },
+    {
+      "time_s": 0.36,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 9.701894171762172
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.029810582823782794,
+          "absorbed_power_w": -0.29810582823782794
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 0.29810582823782816,
+          "current_a": 0.029810582823782815,
+          "absorbed_power_w": 0.00888670848293615
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 9.701894171762172,
+          "current_a": 0.02981058282378155,
+          "absorbed_power_w": 0.28921911975487974
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.47063375260036405
+      },
+      "total_stored_energy_j": 0.47063375260036405,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 1.2455314557513475e-15,
+          "supply": 2.0816681711721685e-17,
+          "storage": -1.2663481374630692e-15
+        },
+        "power_balance_residual_w": -1.2052858711086856e-14,
+        "power_balance_acceptance_threshold_w": 1.5962116564756437e-09,
+        "solver": {
+          "relative_residual": 0.0,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0050000000000000044,
+        "stored_energy_change_j": 0.0014449847602140409,
+        "numerical_damping_j": 1.1108385603669261e-06,
+        "discrete_energy_residual_j": 5.2440445039224175e-17
+      }
+    },
+    {
+      "time_s": 0.365,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 9.716089687392543
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.028391031260745603,
+          "absorbed_power_w": -0.28391031260745603
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 0.2839103126074569,
+          "current_a": 0.028391031260745693,
+          "absorbed_power_w": 0.008060506560486392
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 9.716089687392543,
+          "current_a": 0.028391031260742466,
+          "absorbed_power_w": 0.2758498060469392
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.4720119940672786
+      },
+      "total_stored_energy_j": 0.4720119940672786,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 3.1363800445660672e-15,
+          "supply": 9.020562075079397e-17,
+          "storage": -3.226585665316861e-15
+        },
+        "power_balance_residual_w": -3.043051921558515e-14,
+        "power_balance_acceptance_threshold_w": 1.5678206252148817e-09,
+        "solver": {
+          "relative_residual": 8.706014831623284e-17,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0050000000000000044,
+        "stored_energy_change_j": 0.0013782414669145648,
+        "numerical_damping_j": 1.007563320060572e-06,
+        "discrete_energy_residual_j": 2.238619141133654e-16
+      }
+    },
+    {
+      "time_s": 0.37,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 9.729609226088135
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.027039077391186495,
+          "absorbed_power_w": -0.27039077391186495
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 0.27039077391186517,
+          "current_a": 0.027039077391186515,
+          "absorbed_power_w": 0.007311117061665738
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 9.729609226088135,
+          "current_a": 0.027039077391183473,
+          "absorbed_power_w": 0.2630796568501698
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.4733264784618968
+      },
+      "total_stored_energy_j": 0.4733264784618968,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 3.021888295151598e-15,
+          "supply": 2.0816681711721685e-17,
+          "storage": -3.0427049768633196e-15
+        },
+        "power_balance_residual_w": -2.938881776826108e-14,
+        "power_balance_acceptance_threshold_w": 1.5407815478237004e-09,
+        "solver": {
+          "relative_residual": 0.0,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0050000000000000044,
+        "stored_energy_change_j": 0.0013144843946181761,
+        "numerical_damping_j": 9.138896327080132e-07,
+        "discrete_energy_residual_j": 1.131288734023371e-16
+      }
+    },
+    {
+      "time_s": 0.375,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 9.742484977226795
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.02575150227732048,
+          "absorbed_power_w": -0.2575150227732048
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 0.25751502277320526,
+          "current_a": 0.025751502277320527,
+          "absorbed_power_w": 0.006631398695388442
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 9.742484977226795,
+          "current_a": 0.02575150227731979,
+          "absorbed_power_w": 0.2508836240778097
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.4745800676574489
+      },
+      "total_stored_energy_j": 0.4745800676574489,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 6.904199434387692e-16,
+          "supply": 4.5102810375396984e-17,
+          "storage": -7.355227538141662e-16
+        },
+        "power_balance_residual_w": -6.6986347024844406e-15,
+        "power_balance_acceptance_threshold_w": 1.515030045546403e-09,
+        "solver": {
+          "relative_residual": 0.0,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0050000000000000044,
+        "stored_energy_change_j": 0.0012535891955521294,
+        "numerical_damping_j": 8.289248369235097e-07,
+        "discrete_energy_residual_j": 2.984764111622863e-17
+      }
+    },
+    {
+      "time_s": 0.38,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 9.75474759735885
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.024525240264114956,
+          "absorbed_power_w": -0.24525240264114956
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 0.24525240264114956,
+          "current_a": 0.024525240264114956,
+          "absorbed_power_w": 0.006014874100125654
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 9.75474759735885,
+          "current_a": 0.024525240264111382,
+          "absorbed_power_w": 0.23923752854098904
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.4757755034408913
+      },
+      "total_stored_energy_j": 0.4757755034408913,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 3.573530360512223e-15,
+          "supply": 0.0,
+          "storage": -3.573530360512223e-15
+        },
+        "power_balance_residual_w": -3.486794186713382e-14,
+        "power_balance_acceptance_threshold_w": 1.4905048052822644e-09,
+        "solver": {
+          "relative_residual": 8.671513032969125e-17,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0050000000000000044,
+        "stored_energy_change_j": 0.001195435783442389,
+        "numerical_damping_j": 7.51859262515489e-07,
+        "discrete_energy_residual_j": 2.1601478913176476e-16
+      }
+    },
+    {
+      "time_s": 0.385,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 9.766426283198903
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.02335737168010965,
+          "absorbed_power_w": -0.2335737168010965
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 0.2335737168010965,
+          "current_a": 0.02335737168010965,
+          "absorbed_power_w": 0.005455668118027884
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 9.766426283198903,
+          "current_a": 0.023357371680106077,
+          "absorbed_power_w": 0.22811804868303373
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.4769154117257917
+      },
+      "total_stored_energy_j": 0.4769154117257917,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 3.573530360512223e-15,
+          "supply": 0.0,
+          "storage": -3.573530360512223e-15
+        },
+        "power_balance_residual_w": -3.489483008101146e-14,
+        "power_balance_acceptance_threshold_w": 1.4671474336021583e-09,
+        "solver": {
+          "relative_residual": 8.661143643641506e-17,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0050000000000000044,
+        "stored_energy_change_j": 0.0011399082849004039,
+        "numerical_damping_j": 6.819585147532779e-07,
+        "discrete_energy_residual_j": 1.870900962906881e-16
+      }
+    },
+    {
+      "time_s": 0.39,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 9.777548841141812
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.02224511588581879,
+          "absorbed_power_w": -0.2224511588581879
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 0.22245115885818834,
+          "current_a": 0.022245115885818834,
+          "absorbed_power_w": 0.0049484518077350945
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 9.777548841141812,
+          "current_a": 0.022245115885816326,
+          "absorbed_power_w": 0.21750270705042873
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.47800230670456795
+      },
+      "total_stored_energy_j": 0.47800230670456795,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 2.463307335887066e-15,
+          "supply": 4.5102810375396984e-17,
+          "storage": -2.508410146262463e-15
+        },
+        "power_balance_residual_w": -2.406321669701228e-14,
+        "power_balance_acceptance_threshold_w": 1.4449023177163519e-09,
+        "solver": {
+          "relative_residual": 0.0,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0050000000000000044,
+        "stored_energy_change_j": 0.0010868949787762316,
+        "numerical_damping_j": 6.185564759667485e-07,
+        "discrete_energy_residual_j": 6.666308113568954e-17
+      }
+    },
+    {
+      "time_s": 0.395,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 9.788141753468391
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.02118582465316088,
+          "absorbed_power_w": -0.21185824653160878
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 0.21185824653160878,
+          "current_a": 0.02118582465316088,
+          "absorbed_power_w": 0.004488391662344792
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 9.788141753468391,
+          "current_a": 0.021185824653159085,
+          "absorbed_power_w": 0.20736985486924644
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.4790385949299564
+      },
+      "total_stored_energy_j": 0.4790385949299564,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 1.7937040741600185e-15,
+          "supply": 0.0,
+          "storage": -1.7937040741600185e-15
+        },
+        "power_balance_residual_w": -1.7547595321243392e-14,
+        "power_balance_acceptance_threshold_w": 1.4237164930632001e-09,
+        "solver": {
+          "relative_residual": 0.0,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0050000000000000044,
+        "stored_energy_change_j": 0.0010362882253884265,
+        "numerical_damping_j": 5.61048957793005e-07,
+        "discrete_energy_residual_j": 1.0142520741188762e-16
+      }
+    },
+    {
+      "time_s": 0.4,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 9.798230241398468
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.020176975860153212,
+          "absorbed_power_w": -0.20176975860153212
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 0.20176975860153235,
+          "current_a": 0.020176975860153233,
+          "absorbed_power_w": 0.004071103548612063
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 9.798230241398468,
+          "current_a": 0.020176975860152862,
+          "absorbed_power_w": 0.19769865505291664
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.4800265793172774
+      },
+      "total_stored_energy_j": 0.4800265793172774,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 3.5041414214731503e-16,
+          "supply": 2.0816681711721685e-17,
+          "storage": -3.712308238590367e-16
+        },
+        "power_balance_residual_w": -3.415670524198333e-15,
+        "power_balance_acceptance_threshold_w": 1.4035395172030608e-09,
+        "solver": {
+          "relative_residual": 0.0,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0050000000000000044,
+        "stored_energy_change_j": 0.000987984387321006,
+        "numerical_damping_j": 5.0888794357649e-07,
+        "discrete_energy_residual_j": 1.8872846976891473e-17
+      }
+    },
+    {
+      "time_s": 0.405,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 9.807838325141397
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.019216167485860303,
+          "absorbed_power_w": -0.19216167485860303
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 0.19216167485860325,
+          "current_a": 0.019216167485860323,
+          "absorbed_power_w": 0.0036926109284463548
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 9.807838325141397,
+          "current_a": 0.019216167485858176,
+          "absorbed_power_w": 0.18846906393013582
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.480968463060562
+      },
+      "total_stored_energy_j": 0.480968463060562,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 2.1267709815475655e-15,
+          "supply": 2.0816681711721685e-17,
+          "storage": -2.147587663259287e-15
+        },
+        "power_balance_residual_w": -2.085007513863424e-14,
+        "power_balance_acceptance_threshold_w": 1.3843233497171852e-09,
+        "solver": {
+          "relative_residual": 0.0,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0050000000000000044,
+        "stored_energy_change_j": 0.0009418837432846328,
+        "numerical_damping_j": 4.6157636605569203e-07,
+        "discrete_energy_residual_j": 9.58311371304242e-17
+      }
+    },
+    {
+      "time_s": 0.41000000000000003,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 9.816988881087044
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.018301111891295574,
+          "absorbed_power_w": -0.18301111891295574
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 0.1830111189129564,
+          "current_a": 0.01830111189129564,
+          "absorbed_power_w": 0.003349306964577227
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 9.816988881087044,
+          "current_a": 0.01830111189129367,
+          "absorbed_power_w": 0.1796618119483598
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.48186635345693324
+      },
+      "total_stored_energy_j": 0.48186635345693324,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 1.904726376622534e-15,
+          "supply": 6.591949208711867e-17,
+          "storage": -1.970645868709653e-15
+        },
+        "power_balance_residual_w": -1.870031907102998e-14,
+        "power_balance_acceptance_threshold_w": 1.366022237825893e-09,
+        "solver": {
+          "relative_residual": 0.0,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0050000000000000044,
+        "stored_energy_change_j": 0.0008978903963712259,
+        "numerical_damping_j": 4.18663370572064e-07,
+        "discrete_energy_residual_j": 9.532916423005762e-17
+      }
+    },
+    {
+      "time_s": 0.41500000000000004,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 9.825703696273374
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.01742963037266254,
+          "absorbed_power_w": -0.1742963037266254
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 0.17429630372662608,
+          "current_a": 0.017429630372662607,
+          "absorbed_power_w": 0.003037920149276429
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 9.825703696273374,
+          "current_a": 0.01742963037266064,
+          "absorbed_power_w": 0.1712583835773303
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.48272226563480125
+      },
+      "total_stored_energy_j": 0.48272226563480125,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 1.9012569296705806e-15,
+          "supply": 6.591949208711867e-17,
+          "storage": -1.9671764217576992e-15
+        },
+        "power_balance_residual_w": -1.8674731899759323e-14,
+        "power_balance_acceptance_threshold_w": 1.3485926074532323e-09,
+        "solver": {
+          "relative_residual": 0.0,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0050000000000000044,
+        "stored_energy_change_j": 0.0008559121778680123,
+        "numerical_damping_j": 3.7974001865946846e-07,
+        "discrete_energy_residual_j": 7.389356613168906e-17
+      }
+    },
+    {
+      "time_s": 0.42,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 9.834003520260355
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.016599647973964515,
+          "absorbed_power_w": -0.16599647973964515
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 0.16599647973964515,
+          "current_a": 0.016599647973964515,
+          "absorbed_power_w": 0.0027554831285954424
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 9.834003520260355,
+          "current_a": 0.01659964797396202,
+          "absorbed_power_w": 0.16324099661102517
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.4835381261824653
+      },
+      "total_stored_energy_j": 0.4835381261824653,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 2.4945323584546486e-15,
+          "supply": 0.0,
+          "storage": -2.4945323584546486e-15
+        },
+        "power_balance_residual_w": -2.4536362525084954e-14,
+        "power_balance_acceptance_threshold_w": 1.3319929594792658e-09,
+        "solver": {
+          "relative_residual": 0.0,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.004999999999999949,
+        "stored_energy_change_j": 0.0008158605476640268,
+        "numerical_damping_j": 3.444353910743197e-07,
+        "discrete_energy_residual_j": 1.3910102114752208e-16
+      }
+    },
+    {
+      "time_s": 0.425,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 9.84190811453367
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.015809188546632935,
+          "absorbed_power_w": -0.15809188546632935
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 0.15809188546633024,
+          "current_a": 0.015809188546633025,
+          "absorbed_power_w": 0.002499304425029928
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 9.84190811453367,
+          "current_a": 0.015809188546629813,
+          "absorbed_power_w": 0.15559258104126872
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.48431577667461845
+      },
+      "total_stored_energy_j": 0.48431577667461845,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 3.1225022567582528e-15,
+          "supply": 9.020562075079397e-17,
+          "storage": -3.2127078775090467e-15
+        },
+        "power_balance_residual_w": -3.0705472886527474e-14,
+        "power_balance_acceptance_threshold_w": 1.316183770932628e-09,
+        "solver": {
+          "relative_residual": 8.594717603480642e-17,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0050000000000000044,
+        "stored_energy_change_j": 0.0007776504921531702,
+        "numerical_damping_j": 3.1241305312861463e-07,
+        "discrete_energy_residual_j": 1.9907148320871858e-16
+      }
+    },
+    {
+      "time_s": 0.43,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 9.849436299555876
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.015056370044412404,
+          "absorbed_power_w": -0.15056370044412404
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 0.15056370044412404,
+          "current_a": 0.015056370044412404,
+          "absorbed_power_w": 0.0022669427891427916
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 9.849436299555876,
+          "current_a": 0.015056370044412392,
+          "absorbed_power_w": 0.14829675765498113
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.48505697709504475
+      },
+      "total_stored_energy_j": 0.48505697709504475,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 1.214306433183765e-17,
+          "supply": 0.0,
+          "storage": -1.214306433183765e-17
+        },
+        "power_balance_residual_w": -1.201296007113939e-16,
+        "power_balance_acceptance_threshold_w": 1.301127400888248e-09,
+        "solver": {
+          "relative_residual": 0.0,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0050000000000000044,
+        "stored_energy_change_j": 0.0007412004204263023,
+        "numerical_damping_j": 2.83367848642849e-07,
+        "discrete_energy_residual_j": -3.828858913341375e-17
+      }
+    },
+    {
+      "time_s": 0.435,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 9.856605999577024
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.014339400042297612,
+          "absorbed_power_w": -0.14339400042297612
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 0.14339400042297612,
+          "current_a": 0.014339400042297612,
+          "absorbed_power_w": 0.0020561839357304476
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 9.856605999577024,
+          "current_a": 0.014339400042295824,
+          "absorbed_power_w": 0.14133781648722804
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.4857634091544889
+      },
+      "total_stored_energy_j": 0.4857634091544889,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 1.788499903732088e-15,
+          "supply": 0.0,
+          "storage": -1.788499903732088e-15
+        },
+        "power_balance_residual_w": -1.7631729409828267e-14,
+        "power_balance_acceptance_threshold_w": 1.2867880008459347e-09,
+        "solver": {
+          "relative_residual": 0.0,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0050000000000000044,
+        "stored_energy_change_j": 0.0007064320594441509,
+        "numerical_damping_j": 2.570229919662423e-07,
+        "discrete_energy_residual_j": 1.1186917659109234e-16
+      }
+    },
+    {
+      "time_s": 0.44,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 9.86343428531145
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.013656571468854906,
+          "absorbed_power_w": -0.13656571468854906
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 0.13656571468854928,
+          "current_a": 0.013656571468854928,
+          "absorbed_power_w": 0.0018650194428394245
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 9.86343428531145,
+          "current_a": 0.013656571468853672,
+          "absorbed_power_w": 0.13470069524569747
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.48643667950328706
+      },
+      "total_stored_energy_j": 0.48643667950328706,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 1.2333883914195098e-15,
+          "supply": 2.2551405187698492e-17,
+          "storage": -1.2559397966072083e-15
+        },
+        "power_balance_residual_w": -1.2159761045293926e-14,
+        "power_balance_acceptance_threshold_w": 1.273131429377086e-09,
+        "solver": {
+          "relative_residual": 0.0,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0050000000000000044,
+        "stored_energy_change_j": 0.0006732703487981606,
+        "numerical_damping_j": 2.331274303548856e-07,
+        "discrete_energy_residual_j": 3.327838925040456e-17
+      }
+    },
+    {
+      "time_s": 0.445,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 9.869937414582333
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.013006258541766624,
+          "absorbed_power_w": -0.13006258541766624
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 0.1300625854176669,
+          "current_a": 0.01300625854176669,
+          "absorbed_power_w": 0.00169162761255279
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 9.869937414582333,
+          "current_a": 0.013006258541764725,
+          "absorbed_power_w": 0.12837095780509472
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.48707832283886093
+      },
+      "total_stored_energy_j": 0.48707832283886093,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 1.8995222061946038e-15,
+          "supply": 6.591949208711867e-17,
+          "storage": -1.9654416982817224e-15
+        },
+        "power_balance_residual_w": -1.873241145533555e-14,
+        "power_balance_acceptance_threshold_w": 1.260125170835314e-09,
+        "solver": {
+          "relative_residual": 0.0,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0050000000000000044,
+        "stored_energy_change_j": 0.0006416433355738715,
+        "numerical_damping_j": 2.1145345156903523e-07,
+        "discrete_energy_residual_j": 1.2725658886915078e-16
+      }
+    },
+    {
+      "time_s": 0.45,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 9.876130871030792
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.012386912896920732,
+          "absorbed_power_w": -0.12386912896920732
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 0.12386912896920776,
+          "current_a": 0.012386912896920777,
+          "absorbed_power_w": 0.0015343561111590227
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 9.876130871030792,
+          "current_a": 0.012386912896918281,
+          "absorbed_power_w": 0.12233477285802409
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.48768980490863717
+      },
+      "total_stored_energy_j": 0.48768980490863717,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 2.4511642715552284e-15,
+          "supply": 4.5102810375396984e-17,
+          "storage": -2.4962670819306254e-15
+        },
+        "power_balance_residual_w": -2.4207198745518355e-14,
+        "power_balance_acceptance_threshold_w": 1.2477382579383904e-09,
+        "solver": {
+          "relative_residual": 0.0,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0050000000000000044,
+        "stored_energy_change_j": 0.0006114820697762369,
+        "numerical_damping_j": 1.9179451389480083e-07,
+        "discrete_energy_residual_j": 1.1032183268491595e-16
+      }
+    },
+    {
+      "time_s": 0.455,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 9.882029400981706
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.011797059901829332,
+          "absorbed_power_w": -0.11797059901829332
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 0.11797059901829421,
+          "current_a": 0.01179705990182942,
+          "absorbed_power_w": 0.0013917062232735157
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 9.882029400981706,
+          "current_a": 0.011797059901827101,
+          "absorbed_power_w": 0.11657889279499777
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.48827252540933425
+      },
+      "total_stored_energy_j": 0.48827252540933425,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 2.230854390106174e-15,
+          "supply": 8.847089727481716e-17,
+          "storage": -2.319325287380991e-15
+        },
+        "power_balance_residual_w": -2.2039444921850837e-14,
+        "power_balance_acceptance_threshold_w": 1.2359411980365647e-09,
+        "solver": {
+          "relative_residual": 0.0,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0050000000000000044,
+        "stored_energy_change_j": 0.0005827205006970759,
+        "numerical_damping_j": 1.7396327790912137e-07,
+        "discrete_energy_residual_j": 1.144281954736456e-16
+      }
+    },
+    {
+      "time_s": 0.46,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 9.887647048554005
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.011235295144599533,
+          "absorbed_power_w": -0.11235295144599533
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 0.11235295144599533,
+          "current_a": 0.011235295144599533,
+          "absorbed_power_w": 0.0012623185698626184
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 9.887647048554005,
+          "current_a": 0.011235295144597746,
+          "absorbed_power_w": 0.11109063287611505
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.48882782078389364
+      },
+      "total_stored_energy_j": 0.48882782078389364,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 1.7867651802561113e-15,
+          "supply": 0.0,
+          "storage": -1.7867651802561113e-15
+        },
+        "power_balance_residual_w": -1.7661870230223364e-14,
+        "power_balance_acceptance_threshold_w": 1.224705902891973e-09,
+        "solver": {
+          "relative_residual": 0.0,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0050000000000000044,
+        "stored_energy_change_j": 0.0005552953745593947,
+        "numerical_damping_j": 1.577898212327774e-07,
+        "discrete_energy_residual_j": 3.6568715203793493e-17
+      }
+    },
+    {
+      "time_s": 0.465,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 9.89299718909905
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.01070028109009491,
+          "absorbed_power_w": -0.1070028109009491
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 0.10700281090094954,
+          "current_a": 0.010700281090094955,
+          "absorbed_power_w": 0.0011449601540704367
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 9.89299718909905,
+          "current_a": 0.01070028109009157,
+          "absorbed_power_w": 0.10585785074684563
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.4893569669176086
+      },
+      "total_stored_energy_j": 0.4893569669176086,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 3.3393426912553537e-15,
+          "supply": 4.5102810375396984e-17,
+          "storage": -3.3844455016307506e-15
+        },
+        "power_balance_residual_w": -3.30297855039019e-14,
+        "power_balance_acceptance_threshold_w": 1.2140056218018653e-09,
+        "solver": {
+          "relative_residual": 8.550333059533088e-17,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0050000000000000044,
+        "stored_energy_change_j": 0.0005291461337149639,
+        "numerical_damping_j": 1.431200192587143e-07,
+        "discrete_energy_residual_j": 1.7120176990344715e-16
+      }
+    },
+    {
+      "time_s": 0.47000000000000003,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 9.898092561046713
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.010190743895328591,
+          "absorbed_power_w": -0.10190743895328591
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 0.1019074389532868,
+          "current_a": 0.01019074389532868,
+          "absorbed_power_w": 0.0010385126114017876
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 9.898092561046713,
+          "current_a": 0.010190743895325474,
+          "absorbed_power_w": 0.10086892634185328
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.4898611817352414
+      },
+      "total_stored_energy_j": 0.4898611817352414,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 3.1172980863303223e-15,
+          "supply": 8.847089727481716e-17,
+          "storage": -3.2057689836051395e-15
+        },
+        "power_balance_residual_w": -3.0844467605040116e-14,
+        "power_balance_acceptance_threshold_w": 1.2038148779065411e-09,
+        "solver": {
+          "relative_residual": 8.545931491559659e-17,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0050000000000000044,
+        "stored_energy_change_j": 0.0005042148176327976,
+        "numerical_damping_j": 1.29814076425142e-07,
+        "discrete_energy_residual_j": 1.9832405604210547e-16
+      }
+    },
+    {
+      "time_s": 0.47500000000000003,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 9.902945296234964
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.009705470376503489,
+          "absorbed_power_w": -0.09705470376503489
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 0.09705470376503555,
+          "current_a": 0.009705470376503555,
+          "absorbed_power_w": 0.0009419615522918806
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 9.902945296234964,
+          "current_a": 0.009705470376502481,
+          "absorbed_power_w": 0.09611274221273304
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.49034162770111106
+      },
+      "total_stored_energy_j": 0.49034162770111106,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 1.007874339542525e-15,
+          "supply": 6.591949208711867e-17,
+          "storage": -1.0737938316296436e-15
+        },
+        "power_balance_residual_w": -9.967612672745485e-15,
+        "power_balance_acceptance_threshold_w": 1.19410940753006e-09,
+        "solver": {
+          "relative_residual": 0.0,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0050000000000000044,
+        "stored_energy_change_j": 0.00048044596586965804,
+        "numerical_damping_j": 1.1774519403645923e-07,
+        "discrete_energy_residual_j": 2.0934022244696007e-17
+      }
+    },
+    {
+      "time_s": 0.48,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 9.907566948795203
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.009243305120479661,
+          "absorbed_power_w": -0.09243305120479661
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 0.09243305120479661,
+          "current_a": 0.009243305120479661,
+          "absorbed_power_w": 0.0008543868955028553
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 9.907566948795203,
+          "current_a": 0.009243305120477979,
+          "absorbed_power_w": 0.09157866430927708
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.4907994142242955
+      },
+      "total_stored_energy_j": 0.4907994142242955,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 1.6826817716975029e-15,
+          "supply": 0.0,
+          "storage": -1.6826817716975029e-15
+        },
+        "power_balance_residual_w": -1.6676872556520284e-14,
+        "power_balance_acceptance_threshold_w": 1.1848661024095766e-09,
+        "solver": {
+          "relative_residual": 0.0,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.004999999999999949,
+        "stored_energy_change_j": 0.0004577865231844558,
+        "numerical_damping_j": 1.0679836193781586e-07,
+        "discrete_energy_residual_j": 7.051149592220065e-17
+      }
+    },
+    {
+      "time_s": 0.485,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 9.911968522662098
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.008803147733790095,
+          "absorbed_power_w": -0.08803147733790095
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 0.08803147733790162,
+          "current_a": 0.008803147733790161,
+          "absorbed_power_w": 0.0007749541002293486
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 9.911968522662098,
+          "current_a": 0.008803147733789977,
+          "absorbed_power_w": 0.08725652323767044
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.4912355999712213
+      },
+      "total_stored_energy_j": 0.4912355999712213,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 1.1796119636642288e-16,
+          "supply": 6.591949208711867e-17,
+          "storage": -1.8388068845354155e-16
+        },
+        "power_balance_residual_w": -1.1641078725976861e-15,
+        "power_balance_acceptance_threshold_w": 1.1760629546758008e-09,
+        "solver": {
+          "relative_residual": 0.0,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0050000000000000044,
+        "stored_energy_change_j": 0.00043618574692577683,
+        "numerical_damping_j": 9.686926252866467e-08,
+        "discrete_energy_residual_j": 5.294919420316879e-17
+      }
+    },
+    {
+      "time_s": 0.49,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 9.916160497773426
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.008383950222657366,
+          "absorbed_power_w": -0.08383950222657366
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 0.08383950222657433,
+          "current_a": 0.008383950222657432,
+          "absorbed_power_w": 0.0007029062133599761
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 9.916160497773426,
+          "current_a": 0.008383950222654583,
+          "absorbed_power_w": 0.0831365960131861
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.4916511950880106
+      },
+      "total_stored_energy_j": 0.4916511950880106,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 2.7824964554667986e-15,
+          "supply": 6.591949208711867e-17,
+          "storage": -2.8484159475539172e-15
+        },
+        "power_balance_residual_w": -2.7584705353245198e-14,
+        "power_balance_acceptance_threshold_w": 1.1676790044531197e-09,
+        "solver": {
+          "relative_residual": 8.530360207745225e-17,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0050000000000000044,
+        "stored_energy_change_j": 0.0004155951167892913,
+        "numerical_damping_j": 8.786327666993745e-08,
+        "discrete_energy_residual_j": 1.0755983029748709e-16
+      }
+    },
+    {
+      "time_s": 0.495,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 9.920152855022309
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.007984714497769052,
+          "absorbed_power_w": -0.07984714497769052
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 0.07984714497769119,
+          "current_a": 0.007984714497769118,
+          "absorbed_power_w": 0.0006375566561088434
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 9.920152855022309,
+          "current_a": 0.00798471449776627,
+          "absorbed_power_w": 0.07920958832155409
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.49204716333503634
+      },
+      "total_stored_energy_j": 0.49204716333503634,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 2.7824964554667986e-15,
+          "supply": 6.591949208711867e-17,
+          "storage": -2.8484159475539172e-15
+        },
+        "power_balance_residual_w": -2.7590885305628365e-14,
+        "power_balance_acceptance_threshold_w": 1.1596942899553536e-09,
+        "solver": {
+          "relative_residual": 8.526927171388963e-17,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0050000000000000044,
+        "stored_energy_change_j": 0.0003959682470257575,
+        "numerical_damping_j": 7.969458201354871e-08,
+        "discrete_energy_residual_j": 1.3773761573979788e-16
+      }
+    },
+    {
+      "time_s": 0.5,
+      "node_voltages_v": {
+        "ground": 0.0,
+        "supply": 10.0,
+        "storage": 9.923955100021246
+      },
+      "branches": [
+        {
+          "id": "source",
+          "type": "voltage_source",
+          "positive": "supply",
+          "negative": "ground",
+          "voltage_drop_v": 10.0,
+          "current_a": -0.00760448999787533,
+          "absorbed_power_w": -0.0760448999787533
+        },
+        {
+          "id": "resistor",
+          "type": "resistor",
+          "positive": "supply",
+          "negative": "storage",
+          "voltage_drop_v": 0.07604489997875419,
+          "current_a": 0.0076044899978754184,
+          "absorbed_power_w": 0.0005782826812778728
+        },
+        {
+          "id": "storage",
+          "type": "capacitor",
+          "positive": "storage",
+          "negative": "ground",
+          "voltage_drop_v": 9.923955100021246,
+          "current_a": 0.007604489997873991,
+          "absorbed_power_w": 0.07546661729746214
+        }
+      ],
+      "capacitor_energy_j": {
+        "storage": 0.4924244241361885
+      },
+      "total_stored_energy_j": 0.4924244241361885,
+      "diagnostics": {
+        "node_kcl_residuals_a": {
+          "ground": 1.339206523454095e-15,
+          "supply": 8.847089727481716e-17,
+          "storage": -1.4276774207289122e-15
+        },
+        "power_balance_residual_w": -1.328895760793758e-14,
+        "power_balance_acceptance_threshold_w": 1.1520897999574933e-09,
+        "solver": {
+          "relative_residual": 0.0,
+          "minimum_scaled_pivot": 1.0
+        }
+      },
+      "step": {
+        "dt_s": 0.0050000000000000044,
+        "stored_energy_change_j": 0.000377260801152135,
+        "numerical_damping_j": 7.22853351597071e-08,
+        "discrete_energy_residual_j": 8.275522482586355e-17
+      }
+    }
+  ],
+  "energy_accounting": {
+    "quadrature": "right endpoint, consistent with backward Euler",
+    "noncapacitor_absorbed_energy_j": {
+      "source": -0.992395510002131,
+      "resistor": 0.487776669137499
+    },
+    "net_input_to_storage_j": 0.5046188408646319,
+    "initial_stored_energy_j": 0.0,
+    "final_stored_energy_j": 0.4924244241361885,
+    "numerical_damping_j": 0.012194416728437454,
+    "discrete_balance_residual_j": 6.003877950355729e-15,
+    "maximum_step_balance_residual_j": 2.401202880194381e-16
+  },
+  "warnings": [
+    "Fixed sources and fixed-temperature TPV only; no switching events, inductors, controllers or thermal dynamics.",
+    "Backward Euler is first order and numerically dissipative. Numerical damping is not physical heat or a device loss.",
+    "A converged algebraic solve and a closed discrete energy budget do not certify time-integration accuracy; refine the time step.",
+    "Initial capacitor constraints must admit a unique supported initialization; ideal voltage-source/capacitor loops may be rejected even when their voltages are consistent.",
+    "The t=0 sample is a solved right-hand initial state, not a pre-switch state. No instantaneous impulses are modeled."
+  ]
+}
